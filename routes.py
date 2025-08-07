@@ -79,6 +79,11 @@ def search():
                          total_count=total_count,
                          total_records=total_records)
 
+@app.route('/admin')
+def admin():
+    """Administration page for XML processing and database management"""
+    return render_template('admin.html')
+
 @app.route('/programs')
 def programs():
     """Show programs by date"""

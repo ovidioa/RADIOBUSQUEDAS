@@ -14,32 +14,6 @@
         </div>
 
         <div class="row g-4">
-            <!-- Process XML Files Card -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <i data-feather="upload" class="text-success me-2"></i>
-                            <h5 class="card-title mb-0">Procesar Archivos XML</h5>
-                        </div>
-                        <p class="card-text">Carga y procesa archivos XML de radiodifusión para extraer datos a la base de datos.</p>
-                        
-                        <form method="POST" action="{{ url_for('process_xml') }}" class="mb-3">
-                            <div class="mb-3">
-                                <label for="directory_path" class="form-label">Ruta del Directorio</label>
-                                <input type="text" class="form-control" id="directory_path" name="directory_path" 
-                                       placeholder="./attached_assets" value="./attached_assets">
-                                <div class="form-text">Ingresa la ruta del directorio que contiene los archivos XML a procesar</div>
-                            </div>
-                            <button type="submit" class="btn btn-success">
-                                <i data-feather="play" class="me-2"></i>
-                                Procesar Archivos
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <!-- Search Database Card -->
             <div class="col-md-6">
                 <div class="card h-100">
@@ -59,29 +33,23 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Database Management Card -->
-        <div class="card mt-4">
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <i data-feather="database" class="text-warning me-2"></i>
-                    <h5 class="card-title mb-0">Gestión de Base de Datos</h5>
-                </div>
-                
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <p class="card-text mb-0">Elimina todos los registros de la base de datos para empezar de nuevo.</p>
-                        <small class="text-muted">Esta acción no se puede deshacer.</small>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <form method="POST" action="{{ url_for('clear_database') }}" 
-                              onsubmit="return confirm('¿Estás seguro de que quieres eliminar todos los registros de la base de datos? Esta acción no se puede deshacer.');">
-                            <button type="submit" class="btn btn-outline-warning">
-                                <i data-feather="trash-2" class="me-2"></i>
-                                Limpiar Base de Datos
-                            </button>
-                        </form>
+            <!-- View Programs Card -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="calendar" class="text-primary me-2"></i>
+                            <h5 class="card-title mb-0">Ver Programas</h5>
+                        </div>
+                        <p class="card-text">Explora programas de radiodifusión organizados por fecha y nombre.</p>
+                        
+                        <div class="d-grid">
+                            <a href="{{ url_for('programs') }}" class="btn btn-primary">
+                                <i data-feather="calendar" class="me-2"></i>
+                                Ver Programas
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

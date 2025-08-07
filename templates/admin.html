@@ -1,0 +1,105 @@
+
+{% extends "base.html" %}
+
+{% block title %}Administrar - Procesador de Datos de Difusión XML{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-5 mb-3">
+                <i data-feather="settings" class="text-warning me-3"></i>
+                Administración del Sistema
+            </h1>
+            <p class="lead text-muted">Gestiona archivos XML y base de datos</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Process XML Files Card -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="upload" class="text-success me-2"></i>
+                            <h5 class="card-title mb-0">Procesar Archivos XML</h5>
+                        </div>
+                        <p class="card-text">Carga y procesa archivos XML de radiodifusión para extraer datos a la base de datos.</p>
+                        
+                        <form method="POST" action="{{ url_for('process_xml') }}" class="mb-3">
+                            <div class="mb-3">
+                                <label for="directory_path" class="form-label">Ruta del Directorio</label>
+                                <input type="text" class="form-control" id="directory_path" name="directory_path" 
+                                       placeholder="./attached_assets" value="./attached_assets">
+                                <div class="form-text">Ingresa la ruta del directorio que contiene los archivos XML a procesar</div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i data-feather="play" class="me-2"></i>
+                                Procesar Archivos
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Management Card -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="database" class="text-warning me-2"></i>
+                            <h5 class="card-title mb-0">Gestión de Base de Datos</h5>
+                        </div>
+                        <p class="card-text">Elimina todos los registros de la base de datos para empezar de nuevo.</p>
+                        <small class="text-muted d-block mb-3">Esta acción no se puede deshacer.</small>
+                        
+                        <form method="POST" action="{{ url_for('clear_database') }}" 
+                              onsubmit="return confirm('¿Estás seguro de que quieres eliminar todos los registros de la base de datos? Esta acción no se puede deshacer.');">
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i data-feather="trash-2" class="me-2"></i>
+                                Limpiar Base de Datos
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i data-feather="info" class="text-secondary me-2"></i>
+                    <h5 class="card-title mb-0">Instrucciones de Administración</h5>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-success">
+                            <i data-feather="upload" class="me-2"></i>
+                            Procesamiento de Archivos
+                        </h6>
+                        <ul class="list-unstyled ms-3">
+                            <li class="mb-2">• Asegúrate de que los archivos XML estén en el directorio especificado</li>
+                            <li class="mb-2">• Los archivos deben tener un formato XML válido</li>
+                            <li class="mb-2">• El procesamiento puede tomar varios minutos dependiendo del número de archivos</li>
+                            <li class="mb-2">• Los datos se extraerán automáticamente a la base de datos</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-warning">
+                            <i data-feather="database" class="me-2"></i>
+                            Gestión de Base de Datos
+                        </h6>
+                        <ul class="list-unstyled ms-3">
+                            <li class="mb-2">• Usa "Limpiar Base de Datos" solo cuando necesites empezar de cero</li>
+                            <li class="mb-2">• Esta acción eliminará TODOS los registros existentes</li>
+                            <li class="mb-2">• No hay forma de recuperar los datos una vez eliminados</li>
+                            <li class="mb-2">• Considera hacer una copia de seguridad antes de limpiar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
