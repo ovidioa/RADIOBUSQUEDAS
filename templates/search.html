@@ -280,8 +280,19 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <!-- Sección destacada para código DLT -->
+                                        {% if result.item_code %}
+                                        <div class="alert alert-info d-flex align-items-center mb-3">
+                                            <i data-feather="tag" class="me-2"></i>
+                                            <div>
+                                                <strong>Código DLT:</strong> 
+                                                <span class="badge bg-primary fs-6 ms-2">{{ result.item_code }}</span>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
                                         <div class="row g-3">
-                                            {% for field in ['guid', 'object_id', 'object_type', 'title', 'program_name', 'program_date', 'broadcast_start_time', 'broadcast_end_time', 'duration', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'item_code', 'title_type', 'record_date', 'source_file'] %}
+                                            {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}
                                                 {% set value = result[field] if result[field] else 'N/A' %}
                                                 {% if value != 'N/A' %}
                                                 <div class="col-md-6">
