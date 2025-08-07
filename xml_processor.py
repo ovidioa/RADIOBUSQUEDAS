@@ -154,6 +154,16 @@ class XMLProcessor:
         if text_contents:
             data['text_content'] = '\n\n'.join(text_contents)
         
+        # Extract item_code from various possible locations
+        item_code_elem = story_elem.find('.//itemCode[@t="ws"]')
+        if item_code_elem is not None and item_code_elem.text:
+            data['item_code'] = item_code_elem.text.strip()
+        else:
+            # Try alternative locations
+            item_code_elem = story_elem.find('.//item_code[@t="ws"]')
+            if item_code_elem is not None and item_code_elem.text:
+                data['item_code'] = item_code_elem.text.strip()
+        
         return data
 
     def extract_story_pack_data(self, story_pack, file_path, program_info):
@@ -208,6 +218,16 @@ class XMLProcessor:
             timing_data = self.extract_timing_flags(story_content)
             data.update(timing_data)
         
+        # Extract item_code from various possible locations
+        item_code_elem = story_pack.find('.//itemCode[@t="ws"]')
+        if item_code_elem is not None and item_code_elem.text:
+            data['item_code'] = item_code_elem.text.strip()
+        else:
+            # Try alternative locations
+            item_code_elem = story_pack.find('.//item_code[@t="ws"]')
+            if item_code_elem is not None and item_code_elem.text:
+                data['item_code'] = item_code_elem.text.strip()
+        
         return data
     
     def extract_group_pack_data(self, group_pack, file_path, program_info):
@@ -261,6 +281,16 @@ class XMLProcessor:
             # Extract timing flags
             timing_data = self.extract_timing_flags(story_content)
             data.update(timing_data)
+        
+        # Extract item_code from various possible locations
+        item_code_elem = group_pack.find('.//itemCode[@t="ws"]')
+        if item_code_elem is not None and item_code_elem.text:
+            data['item_code'] = item_code_elem.text.strip()
+        else:
+            # Try alternative locations
+            item_code_elem = group_pack.find('.//item_code[@t="ws"]')
+            if item_code_elem is not None and item_code_elem.text:
+                data['item_code'] = item_code_elem.text.strip()
         
         return data
     
