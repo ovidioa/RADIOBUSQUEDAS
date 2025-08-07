@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Programas por Día{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i data-feather="calendar" class="me-2"></i>
+            Programas por Día
+        </h2>
+        <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+            <i data-feather="search" class="me-1"></i>
+            Búsqueda Avanzada
+        </a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i data-feather="filter" class="me-1"></i>
+                Filtrar Programas
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('programs') }}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="date" class="form-label">Fecha del Programa</label>
+                        <input type="date" class="form-control" id="date" name="date" 
+                               value="{{ selected_date }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="program" class="form-label">Nombre del Programa</label>
+                        <input type="text" class="form-control" id="program" name="program" 
+                               value="{{ selected_program }}" placeholder="ej. INFORMATIU MATI">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="search" class="me-1"></i>
+                        Buscar
+                    </button>
+                    <a href="{{ url_for('programs') }}" class="btn btn-outline-secondary ms-2">
+                        <i data-feather="x" class="me-1"></i>
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Programs Overview -->
+    {% if not (selected_date or selected_program) %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i data-feather="list" class="me-1"></i>
+                Programas Disponibles
+            </h5>
+        </div>
+        {% if programs_data %}
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Programa</th>
+                            <th>Historias</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for program in programs_data %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-info">{{ program.program_date }}</span>
+                            </td>
+                            <td class="fw-medium">{{ program.program_name }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ program.story_count }} elementos</span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('programs', date=program.program_date, program=program.program_name) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i data-feather="eye" class="me-1"></i>
+                                    Ver Contenido
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="card-body text-center py-5">
+                <div class="text-muted">
+                    <i data-feather="calendar" class="mb-3" style="width: 48px; height: 48px;"></i>
+                    <p class="mb-0">No hay programas disponibles.</p>
+                    <small>Procesa algunos archivos XML primero.</small>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Filtered Results -->
+    {% if filtered_results %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i data-feather="list" class="me-2"></i>
+                Contenido del Programa
+                <span class="badge bg-primary ms-2">{{ filtered_results|length }} elementos</span>
+            </h5>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped results-table mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Título</th>
+                        <th>Duración</th>
+                        <th>Vista Previa del Contenido</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in filtered_results %}
+                    <tr>
+                        <td>
+                            <code class="small">{{ result.object_id or result.id }}</code>
+                        </td>
+                        <td>
+                            <span class="badge {{ 'bg-success' if result.object_type == 'Story' else ('bg-info' if result.object_type == 'StoryPack' else 'bg-secondary') }}">
+                                {{ result.object_type or 'N/A' }}
+                            </span>
+                        </td>
+                        <td class="text-truncate-200" title="{{ result.title or 'Sin título' }}">
+                            {{ result.title or 'Sin título' }}
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ result.duration or 'N/A' }}</small>
+                        </td>
+                        <td class="text-truncate-300" title="{{ result.text_content or 'Sin contenido' }}">
+                            {{ (result.text_content[:150] + '...') if result.text_content and result.text_content|length > 150 else (result.text_content or 'Sin contenido') }}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal{{ result.id }}">
+                                <i data-feather="eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Detail Modal -->
+                    <div class="modal fade" id="detailModal{{ result.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i data-feather="info"></i>
+                                        Detalles del Elemento - ID: {{ result.object_id or result.id }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row g-3">
+                                        {% for field in ['guid', 'object_id', 'object_type', 'title', 'program_name', 'program_date', 'broadcast_start_time', 'broadcast_end_time', 'duration', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'item_code', 'title_type', 'record_date', 'source_file'] %}
+                                            {% set value = result[field] if result[field] else 'N/A' %}
+                                            {% if value != 'N/A' %}
+                                            <div class="col-md-6">
+                                                <strong>{{ field.replace('_', ' ').title() }}:</strong>
+                                                <div class="text-muted small">{{ value }}</div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    {% if result.text_content %}
+                                        <div class="mt-4">
+                                            <strong>Contenido Completo:</strong>
+                                            <div class="bg-dark border p-3 rounded mt-2" style="max-height: 200px; overflow-y: auto; color: var(--bs-light);">
+                                                <pre class="mb-0" style="white-space: pre-wrap; color: inherit;">{{ result.text_content }}</pre>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% elif selected_date or selected_program %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <div class="text-muted">
+                <i data-feather="search" class="mb-3" style="width: 48px; height: 48px;"></i>
+                <p class="mb-0">No se encontraron elementos para los criterios seleccionados.</p>
+                <small>Intenta ajustar los filtros de búsqueda.</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.text-truncate-200 {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-truncate-300 {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-truncate-150 {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+{% endblock %}

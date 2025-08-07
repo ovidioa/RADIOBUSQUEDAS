@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Procesador de Datos de Difusión XML{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">
+                <i data-feather="radio" class="text-primary me-3"></i>
+                Procesador de Datos de Difusión XML
+            </h1>
+            <p class="lead text-muted">Extrae y busca datos de programación de radiodifusión desde archivos XML</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Process XML Files Card -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="upload" class="text-success me-2"></i>
+                            <h5 class="card-title mb-0">Procesar Archivos XML</h5>
+                        </div>
+                        <p class="card-text">Carga y procesa archivos XML de radiodifusión para extraer datos a la base de datos.</p>
+                        
+                        <form method="POST" action="{{ url_for('process_xml') }}" class="mb-3">
+                            <div class="mb-3">
+                                <label for="directory_path" class="form-label">Ruta del Directorio</label>
+                                <input type="text" class="form-control" id="directory_path" name="directory_path" 
+                                       placeholder="./attached_assets" value="./attached_assets">
+                                <div class="form-text">Ingresa la ruta del directorio que contiene los archivos XML a procesar</div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i data-feather="play" class="me-2"></i>
+                                Procesar Archivos
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Database Card -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i data-feather="search" class="text-info me-2"></i>
+                            <h5 class="card-title mb-0">Buscar en Base de Datos</h5>
+                        </div>
+                        <p class="card-text">Busca en los datos de radiodifusión procesados usando varios criterios.</p>
+                        
+                        <div class="d-grid">
+                            <a href="{{ url_for('search') }}" class="btn btn-info">
+                                <i data-feather="search" class="me-2"></i>
+                                Ir a Búsqueda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Management Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i data-feather="database" class="text-warning me-2"></i>
+                    <h5 class="card-title mb-0">Gestión de Base de Datos</h5>
+                </div>
+                
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <p class="card-text mb-0">Elimina todos los registros de la base de datos para empezar de nuevo.</p>
+                        <small class="text-muted">Esta acción no se puede deshacer.</small>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <form method="POST" action="{{ url_for('clear_database') }}" 
+                              onsubmit="return confirm('¿Estás seguro de que quieres eliminar todos los registros de la base de datos? Esta acción no se puede deshacer.');">
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i data-feather="trash-2" class="me-2"></i>
+                                Limpiar Base de Datos
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i data-feather="info" class="text-secondary me-2"></i>
+                    <h5 class="card-title mb-0">Cómo Usar</h5>
+                </div>
+                
+                <ol class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-start">
+                        <span class="badge bg-primary me-3">1</span>
+                        <div>
+                            <strong>Procesar Archivos XML:</strong> Ingresa la ruta del directorio que contiene tus archivos XML de radiodifusión y haz clic en "Procesar Archivos" para extraer datos a la base de datos.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-start">
+                        <span class="badge bg-primary me-3">2</span>
+                        <div>
+                            <strong>Buscar Datos:</strong> Usa la página de búsqueda para consultar los datos extraídos usando varios filtros como título, contenido, fechas y más.
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-start">
+                        <span class="badge bg-primary me-3">3</span>
+                        <div>
+                            <strong>Ver Resultados:</strong> Los resultados de búsqueda se muestran en formato de tabla con información clave sobre cada elemento de radiodifusión.
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

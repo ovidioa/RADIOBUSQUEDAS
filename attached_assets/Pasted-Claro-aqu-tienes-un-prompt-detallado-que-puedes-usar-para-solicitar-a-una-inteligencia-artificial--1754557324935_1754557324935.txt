@@ -1,0 +1,26 @@
+Claro, aquí tienes un prompt detallado que puedes usar para solicitar a una inteligencia artificial que cree el programa que necesitas. Además, te incluyo el código completo en Python que la IA debería generar, para que tengas una solución completa desde ya.
+
+Prompt para la IA
+"Necesito un programa en Python que realice dos funciones principales:
+
+1. Procesamiento de archivos XML y creación de una base de datos SQLite:
+
+El programa debe poder escanear un directorio que contiene cientos de archivos XML.
+
+Para cada archivo XML, debe extraer la información de los nodos y atributos correspondientes a los siguientes campos: id, object_type, planning_area, timestamp, broadcast_start_time, broadcast_end_time, text_duration, text_timing, timegap_timing, clip_timing, title_status, title_type, site_name, site_version, export_path, linked_story, language_cat, language_vo, language_esp, has_audio_track, fact_date, cms_publish_date, la_carta_publish_date, comment, locator_type, locator_family, locator_timecode_in, locator_timecode_out, locator_duration, locator_modified_by, locator_modified_at.
+
+La información extraída debe ser almacenada en una base de datos SQLite llamada database.db. La tabla debe llamarse xml_data y tener columnas que correspondan a cada uno de los campos mencionados, con tipos de datos apropiados (TEXT, INTEGER, etc.). El campo id debe ser la clave primaria autoincremental.
+
+2. Creación de una aplicación web para realizar búsquedas en la base de datos:
+
+La aplicación web debe ser desarrollada usando el framework Flask de Python.
+
+Debe tener una interfaz web simple (HTML) con un formulario que permita al usuario buscar registros en la base de datos.
+
+El formulario de búsqueda debe contener campos de entrada para cada uno de los campos de la base de datos. El usuario podrá rellenar uno o varios campos para filtrar los resultados.
+
+La aplicación debe mostrar los resultados de la búsqueda en una tabla en la misma página web.
+
+La aplicación debe ser robusta y manejar casos donde no se encuentren resultados.
+
+Adjunto un archivo XML de ejemplo para que puedas entender la estructura de los datos."
