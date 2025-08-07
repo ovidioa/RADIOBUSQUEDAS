@@ -31,9 +31,9 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 
 # Initialize extensions
 db.init_app(app)
-babel = Babel(app)
+babel = Babel()
+babel.init_app(app)
 
-@babel.localeselector
 def get_locale():
     # 1. URL parameter has priority
     if request.args.get('lang'):
@@ -43,6 +43,8 @@ def get_locale():
         return session['language']
     # 3. Default to Spanish
     return 'es'
+
+babel.localeselector(get_locale)
 
 # Import routes and models
 from routes import *
