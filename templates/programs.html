@@ -187,7 +187,7 @@
                                     {% endif %}
                                     
                                     <div class="row g-3">
-                                        {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}ntact_phone', 'edi', 'lin', 'observations', 'item_code', 'title_type', 'record_date', 'source_file'] %}
+                                        {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}
                                             {% set value = result[field] if result[field] else 'N/A' %}
                                             {% if value != 'N/A' %}
                                             <div class="col-md-6">
