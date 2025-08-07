@@ -24,13 +24,13 @@
                     <input type="text" class="form-control" id="title" name="title" 
                            value="{{ search_params.get('title', '') }}" placeholder="Buscar en título">
                 </div>
-                
+
                 <div class="col-md-6">
                     <label for="text_content" class="form-label">Contenido de Texto</label>
                     <input type="text" class="form-control" id="text_content" name="text_content" 
                            value="{{ search_params.get('text_content', '') }}" placeholder="Buscar en contenido">
                 </div>
-                
+
                 <div class="col-md-4">
                     <label for="object_type" class="form-label">Tipo de Objeto</label>
                     <select class="form-select" id="object_type" name="object_type">
@@ -39,33 +39,33 @@
                         <option value="GroupPack" {{ 'selected' if search_params.get('object_type') == 'GroupPack' }}>GroupPack</option>
                     </select>
                 </div>
-                
+
                 <div class="col-md-4">
                     <label for="guid" class="form-label">GUID</label>
                     <input type="text" class="form-control" id="guid" name="guid" 
                            value="{{ search_params.get('guid', '') }}" placeholder="Buscar por GUID">
                 </div>
-                
+
                 <div class="col-md-4">
                     <label for="object_id" class="form-label">ID de Objeto</label>
                     <input type="text" class="form-control" id="object_id" name="object_id" 
                            value="{{ search_params.get('object_id', '') }}" placeholder="Buscar por ID de Objeto">
                 </div>
-                
+
                 <!-- Date Fields -->
                 <div class="col-md-6">
-                    <label for="broadcast_start_time" class="form-label">Hora de Inicio de Transmisión</label>
-                    <input type="text" class="form-control" id="broadcast_start_time" name="broadcast_start_time" 
-                           value="{{ search_params.get('broadcast_start_time', '') }}" placeholder="ej., 2025-08-06">
+                    <label for="program_date" class="form-label">Fecha del Programa:</label>
+                    <input type="text" class="form-control" id="program_date" name="program_date" 
+                           value="{{ search_params.get('program_date', '') }}" placeholder="ej., 2025-08-07">
                 </div>
-                
+
                 <div class="col-md-6">
                     <label for="source_file" class="form-label">Archivo Fuente</label>
                     <input type="text" class="form-control" id="source_file" name="source_file" 
                            value="{{ search_params.get('source_file', '') }}" placeholder="Buscar por archivo fuente">
                 </div>
             </div>
-            
+
             <!-- Advanced Search Toggle -->
             <div class="mt-3">
                 <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch">
@@ -73,7 +73,7 @@
                     Opciones de Búsqueda Avanzada
                 </button>
             </div>
-            
+
             <!-- Advanced Search Fields -->
             <div class="collapse mt-3" id="advancedSearch">
                 <div class="row g-3">
@@ -82,98 +82,98 @@
                         <input type="text" class="form-control" id="title_type" name="title_type" 
                                value="{{ search_params.get('title_type', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="duration" class="form-label">Duración</label>
                         <input type="text" class="form-control" id="duration" name="duration" 
                                value="{{ search_params.get('duration', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="language_cat" class="form-label">Idioma (Catalán)</label>
                         <input type="text" class="form-control" id="language_cat" name="language_cat" 
                                value="{{ search_params.get('language_cat', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="record_date" class="form-label">Fecha de Grabación</label>
                         <input type="text" class="form-control" id="record_date" name="record_date" 
                                value="{{ search_params.get('record_date', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="site_name" class="form-label">Nombre del Sitio</label>
                         <input type="text" class="form-control" id="site_name" name="site_name" 
                                value="{{ search_params.get('site_name', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="computed_start_time" class="form-label">Hora de Inicio Computada</label>
                         <input type="text" class="form-control" id="computed_start_time" name="computed_start_time" 
                                value="{{ search_params.get('computed_start_time', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="planned_duration" class="form-label">Durada Planificada</label>
                         <input type="text" class="form-control" id="planned_duration" name="planned_duration" 
                                value="{{ search_params.get('planned_duration', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="calculated_duration" class="form-label">Durada Calculada</label>
                         <input type="text" class="form-control" id="calculated_duration" name="calculated_duration" 
                                value="{{ search_params.get('calculated_duration', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="reporter" class="form-label">Redactor</label>
                         <input type="text" class="form-control" id="reporter" name="reporter" 
                                value="{{ search_params.get('reporter', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="guest" class="form-label">Convidado</label>
                         <input type="text" class="form-control" id="guest" name="guest" 
                                value="{{ search_params.get('guest', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="contact" class="form-label">Contacto</label>
                         <input type="text" class="form-control" id="contact" name="contact" 
                                value="{{ search_params.get('contact', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="contact_phone" class="form-label">Teléfono Contacto</label>
                         <input type="text" class="form-control" id="contact_phone" name="contact_phone" 
                                value="{{ search_params.get('contact_phone', '') }}">
                     </div>
-                    
+
                     <div class="col-md-4">
                         <label for="item_code" class="form-label">Código del Elemento</label>
                         <input type="text" class="form-control" id="item_code" name="item_code" 
                                value="{{ search_params.get('item_code', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="edi" class="form-label">EDI</label>
                         <input type="text" class="form-control" id="edi" name="edi" 
                                value="{{ search_params.get('edi', '') }}">
                     </div>
-                    
+
                     <div class="col-md-6">
                         <label for="lin" class="form-label">LIN</label>
                         <input type="text" class="form-control" id="lin" name="lin" 
                                value="{{ search_params.get('lin', '') }}">
                     </div>
-                    
+
                     <div class="col-md-12">
                         <label for="observations" class="form-label">Observaciones</label>
                         <input type="text" class="form-control" id="observations" name="observations" 
                                value="{{ search_params.get('observations', '') }}">
                     </div>
                 </div>
-                
+
                 <!-- Program Search Section -->
                 <div class="mt-4">
                     <h6 class="text-info">
@@ -186,7 +186,7 @@
                             <input type="text" class="form-control" id="program_name" name="program_name" 
                                    value="{{ search_params.get('program_name', '') }}" placeholder="ej. INFORMATIU MATI 07 H">
                         </div>
-                        
+
                         <div class="col-md-6">
                             <label for="program_date" class="form-label">Fecha del Programa</label>
                             <input type="date" class="form-control" id="program_date" name="program_date" 
@@ -195,7 +195,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Search Actions -->
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
@@ -223,7 +223,7 @@
                 {% endif %}
             </h5>
         </div>
-        
+
         {% if results %}
             <div class="table-responsive">
                 <table class="table table-striped results-table mb-0">
@@ -233,7 +233,7 @@
                             <th>Tipo</th>
                             <th>Título</th>
                             <th>Programa</th>
-                            <th>Fecha</th>
+                            <th>Fecha Programa</th>
                             <th>Vista Previa del Contenido</th>
                             <th>Duración</th>
                             <th>Acciones</th>
@@ -257,7 +257,7 @@
                                 <small class="text-muted">{{ result.program_name or 'N/A' }}</small>
                             </td>
                             <td>
-                                <small class="text-muted">{{ result.program_date or 'N/A' }}</small>
+                                <small class="text-muted">{{ result.program_date or '' }}</small>
                             </td>
                             <td class="text-truncate-200" title="{{ result.text_content or 'Sin contenido' }}">
                                 {{ (result.text_content[:100] + '...') if result.text_content and result.text_content|length > 100 else (result.text_content or 'Sin contenido') }}
@@ -273,7 +273,7 @@
                                 </button>
                             </td>
                         </tr>
-                        
+
                         <!-- Detail Modal -->
                         <div class="modal fade" id="detailModal{{ result.id }}" tabindex="-1">
                             <div class="modal-dialog modal-lg">
@@ -297,7 +297,7 @@
                                                 {% endif %}
                                             {% endfor %}
                                         </div>
-                                        
+
                                         {% if result.text_content %}
                                             <div class="mt-4">
                                                 <strong>Contenido Completo:</strong>
