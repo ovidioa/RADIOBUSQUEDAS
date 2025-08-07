@@ -98,6 +98,15 @@ def programs():
         XMLData.program_name
     ).all()
     
+    # Get unique program names for the dropdown
+    unique_programs = db.session.query(
+        XMLData.program_name
+    ).filter(
+        XMLData.program_name.isnot(None)
+    ).distinct().order_by(XMLData.program_name).all()
+    
+    program_names = [program[0] for program in unique_programs]
+    
     # Get filter parameters
     selected_date = request.args.get('date', '')
     selected_program = request.args.get('program', '')
@@ -119,7 +128,8 @@ def programs():
                          programs_data=programs_data,
                          filtered_results=filtered_results,
                          selected_date=selected_date,
-                         selected_program=selected_program)
+                         selected_program=selected_program,
+                         program_names=program_names)
 
 @app.route('/clear_database', methods=['POST'])
 def clear_database():
