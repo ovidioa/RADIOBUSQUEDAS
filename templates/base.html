@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ _('Procesador de Datos de Difusión XML') }}{% endblock %}</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
-    
+
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
-    
+
     <style>
         .search-form {
             background: var(--bs-gray-900);
@@ -34,42 +34,24 @@
                 <i data-feather="radio" class="me-2"></i>
                 {{ _('Procesador XML Radiodifusión') }}
             </a>
-            
+
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="{{ url_for('index') }}">
                     <i data-feather="home" class="me-1"></i>
-                    {{ _('Inicio') }}
+                    Inicio
                 </a>
                 <a class="nav-link" href="{{ url_for('search') }}">
                     <i data-feather="search" class="me-1"></i>
-                    {{ _('Buscar') }}
+                    Buscar
                 </a>
                 <a class="nav-link" href="{{ url_for('programs') }}">
-                    <i data-feather="calendar" class="me-1"></i>
-                    {{ _('Programas') }}
+                    <i data-feather="tv" class="me-1"></i>
+                    Programas
                 </a>
                 <a class="nav-link" href="{{ url_for('admin') }}">
                     <i data-feather="settings" class="me-1"></i>
-                    {{ _('Administrar') }}
+                    Administrar
                 </a>
-                
-                <!-- Language Selector -->
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i data-feather="globe" class="me-1"></i>
-                        {{ LANGUAGES[CURRENT_LANGUAGE] }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        {% for code, name in LANGUAGES.items() %}
-                        <li>
-                            <a class="dropdown-item {% if code == CURRENT_LANGUAGE %}active{% endif %}" 
-                               href="{{ url_for('set_language', language=code) }}">
-                                {{ name }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
             </div>
         </div>
     </nav>
@@ -98,11 +80,11 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Initialize Feather icons
         feather.replace();
-        
+
         // Auto-hide alerts after 5 seconds
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
@@ -112,7 +94,7 @@
             });
         }, 5000);
     </script>
-    
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

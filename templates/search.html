@@ -1,12 +1,13 @@
+
 {% extends "base.html" %}
 
-{% block title %}{{ _('Búsqueda de Elementos de Difusión') }}{% endblock %}
+{% block title %}Búsqueda de Elementos de Difusión{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>
         <i data-feather="search" class="me-2"></i>
-        {{ _('Buscar Datos de Radiodifusión') }}
+        Buscar Datos de Radiodifusión
     </h2>
     <div class="text-muted">
         <small>Total de registros en la base de datos: {{ total_records }}</small>
@@ -20,341 +21,205 @@
             <div class="row g-3">
                 <!-- Basic Search Fields -->
                 <div class="col-md-6">
-                    <label for="title" class="form-label">{{ _('Título') }}</label>
+                    <label for="title" class="form-label">Título</label>
                     <input type="text" class="form-control" id="title" name="title" 
-                           value="{{ search_params.get('title', '') }}" placeholder="{{ _('Buscar en título') }}">
+                           value="{{ search_params.get('title', '') }}" placeholder="Buscar en título">
                 </div>
 
                 <div class="col-md-6">
-                    <label for="text_content" class="form-label">{{ _('Contenido de Texto') }}</label>
+                    <label for="text_content" class="form-label">Contenido de Texto</label>
                     <input type="text" class="form-control" id="text_content" name="text_content" 
-                           value="{{ search_params.get('text_content', '') }}" placeholder="{{ _('Buscar en contenido') }}">
+                           value="{{ search_params.get('text_content', '') }}" placeholder="Buscar en contenido">
                 </div>
 
-                <div class="col-md-4">
-                    <label for="object_type" class="form-label">{{ _('Tipo de Objeto') }}</label>
-                    <select class="form-select" id="object_type" name="object_type">
-                        <option value="">{{ _('Todos los Tipos') }}</option>
-                        <option value="StoryPack" {{ 'selected' if search_params.get('object_type') == 'StoryPack' }}>{{ _('StoryPack') }}</option>
-                        <option value="GroupPack" {{ 'selected' if search_params.get('object_type') == 'GroupPack' }}>{{ _('GroupPack') }}</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="item_code" class="form-label">DLT</label>
-                    <input type="text" class="form-control" id="item_code" name="item_code" 
-                           value="{{ search_params.get('item_code', '') }}" placeholder="ej. DLT15334975">
-                </div>
-
-                <!-- Date Fields -->
                 <div class="col-md-6">
-                    <label for="program_date" class="form-label">{{ _('Fecha del Programa:') }}</label>
+                    <label for="program_name" class="form-label">Nombre del Programa</label>
+                    <input type="text" class="form-control" id="program_name" name="program_name" 
+                           value="{{ search_params.get('program_name', '') }}" placeholder="Buscar por programa">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="program_date" class="form-label">Fecha del Programa</label>
                     <input type="date" class="form-control" id="program_date" name="program_date" 
                            value="{{ search_params.get('program_date', '') }}">
                 </div>
 
-                <div class="col-md-6">
-                    <label for="source_file" class="form-label">{{ _('Archivo Fuente') }}</label>
-                    <input type="text" class="form-control" id="source_file" name="source_file" 
-                           value="{{ search_params.get('source_file', '') }}" placeholder="{{ _('Buscar por archivo fuente') }}">
-                </div>
-            </div>
-
-            <!-- Advanced Search Toggle -->
-            <div class="mt-3">
-                <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch">
-                    <i data-feather="settings" class="me-1"></i>
-                    {{ _('Opciones de Búsqueda Avanzada') }}
-                </button>
-            </div>
-
-            <!-- Advanced Search Fields -->
-            <div class="collapse mt-3" id="advancedSearch">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="title_type" class="form-label">{{ _('Tipo de Título') }}</label>
-                        <input type="text" class="form-control" id="title_type" name="title_type" 
-                               value="{{ search_params.get('title_type', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="duration" class="form-label">{{ _('Duración') }}</label>
-                        <input type="text" class="form-control" id="duration" name="duration" 
-                               value="{{ search_params.get('duration', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="language_cat" class="form-label">{{ _('Idioma (Catalán)') }}</label>
-                        <input type="text" class="form-control" id="language_cat" name="language_cat" 
-                               value="{{ search_params.get('language_cat', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="record_date" class="form-label">{{ _('Fecha de Grabación') }}</label>
-                        <input type="text" class="form-control" id="record_date" name="record_date" 
-                               value="{{ search_params.get('record_date', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="site_name" class="form-label">{{ _('Nombre del Sitio') }}</label>
-                        <input type="text" class="form-control" id="site_name" name="site_name" 
-                               value="{{ search_params.get('site_name', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="computed_start_time" class="form-label">{{ _('Hora de Inicio Computada') }}</label>
-                        <input type="text" class="form-control" id="computed_start_time" name="computed_start_time" 
-                               value="{{ search_params.get('computed_start_time', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="planned_duration" class="form-label">{{ _('Durada Planificada') }}</label>
-                        <input type="text" class="form-control" id="planned_duration" name="planned_duration" 
-                               value="{{ search_params.get('planned_duration', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="calculated_duration" class="form-label">{{ _('Durada Calculada') }}</label>
-                        <input type="text" class="form-control" id="calculated_duration" name="calculated_duration" 
-                               value="{{ search_params.get('calculated_duration', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="reporter" class="form-label">{{ _('Redactor') }}</label>
-                        <input type="text" class="form-control" id="reporter" name="reporter" 
-                               value="{{ search_params.get('reporter', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="guest" class="form-label">{{ _('Convidado') }}</label>
-                        <input type="text" class="form-control" id="guest" name="guest" 
-                               value="{{ search_params.get('guest', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="contact" class="form-label">{{ _('Contacto') }}</label>
-                        <input type="text" class="form-control" id="contact" name="contact" 
-                               value="{{ search_params.get('contact', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="contact_phone" class="form-label">{{ _('Teléfono Contacto') }}</label>
-                        <input type="text" class="form-control" id="contact_phone" name="contact_phone" 
-                               value="{{ search_params.get('contact_phone', '') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="guid" class="form-label">GUID</label>
-                        <input type="text" class="form-control" id="guid" name="guid" 
-                               value="{{ search_params.get('guid', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="edi" class="form-label">EDI</label>
-                        <input type="text" class="form-control" id="edi" name="edi" 
-                               value="{{ search_params.get('edi', '') }}">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="lin" class="form-label">LIN</label>
-                        <input type="text" class="form-control" id="lin" name="lin" 
-                               value="{{ search_params.get('lin', '') }}">
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="observations" class="form-label">{{ _('Observaciones') }}</label>
-                        <input type="text" class="form-control" id="observations" name="observations" 
-                               value="{{ search_params.get('observations', '') }}">
-                    </div>
+                <!-- Advanced Search Fields -->
+                <div class="col-12">
+                    <button class="btn btn-link text-primary p-0" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#advancedSearch" aria-expanded="false">
+                        <i data-feather="chevron-down" class="me-1"></i>
+                        Búsqueda Avanzada
+                    </button>
                 </div>
 
-                <!-- Program Search Section -->
-                <div class="mt-4">
-                    <h6 class="text-info">
-                        <i data-feather="calendar" class="me-1"></i>
-                        {{ _('Búsqueda por Programa') }}
-                    </h6>
+                <div class="collapse" id="advancedSearch">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="program_name" class="form-label">{{ _('Nombre del Programa') }}</label>
-                            <input type="text" class="form-control" id="program_name" name="program_name" 
-                                   value="{{ search_params.get('program_name', '') }}" placeholder="{{ _('ej. INFORMATIU MATI 07 H') }}">
+                            <label for="object_type" class="form-label">Tipo de Objeto</label>
+                            <input type="text" class="form-control" id="object_type" name="object_type" 
+                                   value="{{ search_params.get('object_type', '') }}" placeholder="Tipo de objeto">
                         </div>
 
                         <div class="col-md-6">
-                            <label for="program_date" class="form-label">{{ _('Fecha del Programa') }}</label>
-                            <input type="date" class="form-control" id="program_date" name="program_date" 
-                                   value="{{ search_params.get('program_date', '') }}">
+                            <label for="reporter" class="form-label">Periodista</label>
+                            <input type="text" class="form-control" id="reporter" name="reporter" 
+                                   value="{{ search_params.get('reporter', '') }}" placeholder="Nombre del periodista">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="guest" class="form-label">Invitado</label>
+                            <input type="text" class="form-control" id="guest" name="guest" 
+                                   value="{{ search_params.get('guest', '') }}" placeholder="Nombre del invitado">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="duration" class="form-label">Duración</label>
+                            <input type="text" class="form-control" id="duration" name="duration" 
+                                   value="{{ search_params.get('duration', '') }}" placeholder="Duración">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="broadcast_start_time" class="form-label">Hora de Inicio</label>
+                            <input type="text" class="form-control" id="broadcast_start_time" name="broadcast_start_time" 
+                                   value="{{ search_params.get('broadcast_start_time', '') }}" placeholder="Hora de inicio">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contact" class="form-label">Contacto</label>
+                            <input type="text" class="form-control" id="contact" name="contact" 
+                                   value="{{ search_params.get('contact', '') }}" placeholder="Información de contacto">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="title_type" class="form-label">Tipo de Título</label>
+                            <input type="text" class="form-control" id="title_type" name="title_type" 
+                                   value="{{ search_params.get('title_type', '') }}" placeholder="Tipo de título">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="source_file" class="form-label">Archivo Fuente</label>
+                            <input type="text" class="form-control" id="source_file" name="source_file" 
+                                   value="{{ search_params.get('source_file', '') }}" placeholder="Nombre del archivo">
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Search Actions -->
-            <div class="mt-4 d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i data-feather="search" class="me-2"></i>
-                    {{ _('Buscar') }}
-                </button>
-                <a href="{{ url_for('search') }}" class="btn btn-outline-secondary">
-                    <i data-feather="x-circle" class="me-2"></i>
-                    {{ _('Limpiar') }}
-                </a>
+                <!-- Search Button -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="search" class="me-2"></i>
+                        Buscar
+                    </button>
+                    {% if search_params %}
+                    <a href="{{ url_for('search') }}" class="btn btn-secondary ms-2">
+                        <i data-feather="x" class="me-2"></i>
+                        Limpiar
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Search Results -->
+<!-- Results Section -->
 {% if search_params %}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
-                <i data-feather="list" class="me-2"></i>
-                {{ _('Resultados de Búsqueda') }}
-                {% if total_count > 0 %}
-                    <span class="badge bg-primary ms-2">{{ total_count }} {{ _('encontrados') }}</span>
-                {% endif %}
-            </h5>
-        </div>
-
-        {% if results %}
-            <div class="table-responsive">
-                <table class="table table-striped results-table mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>{{ _('ID') }}</th>
-                            <th>{{ _('Tipo') }}</th>
-                            <th>{{ _('Título') }}</th>
-                            <th>{{ _('Programa') }}</th>
-                            <th>{{ _('Fecha Programa') }}</th>
-                            <th>{{ _('Vista Previa del Contenido') }}</th>
-                            <th>{{ _('Duración') }}</th>
-                            <th>{{ _('Acciones') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for result in results %}
-                        <tr>
-                            <td>
-                                <code class="small">{{ result.object_id or result.id }}</code>
-                            </td>
-                            <td>
-                                <span class="badge {{ 'bg-success' if result.object_type == 'Story' else ('bg-info' if result.object_type == 'StoryPack' else 'bg-secondary') }}">
-                                    {{ result.object_type or 'N/A' }}
-                                </span>
-                            </td>
-                            <td class="text-truncate-200" title="{{ result.title or _('Sin título') }}">
-                                {{ result.title or _('Sin título') }}
-                            </td>
-                            <td class="text-truncate-150" title="{{ result.program_name or 'N/A' }}">
-                                <small class="text-muted">{{ result.program_name or 'N/A' }}</small>
-                            </td>
-                            <td>
-                                <small class="text-muted">{{ result.program_date or '' }}</small>
-                            </td>
-                            <td class="text-truncate-200" title="{{ result.text_content or _('Sin contenido') }}">
-                                {{ (result.text_content[:100] + '...') if result.text_content and result.text_content|length > 100 else (result.text_content or _('Sin contenido')) }}
-                            </td>
-                            <td>
-                                <small class="text-muted">{{ result.duration or 'N/A' }}</small>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-info" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#detailModal{{ result.id }}">
-                                    <i data-feather="eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Detail Modal -->
-                        <div class="modal fade" id="detailModal{{ result.id }}" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            <i data-feather="info"></i>
-                                            {{ _('Detalles del Registro - ID:') }} {{ result.object_id or result.id }}
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Sección destacada para código DLT -->
-                                        {% if result.item_code %}
-                                        <div class="alert alert-info d-flex align-items-center mb-3">
-                                            <i data-feather="tag" class="me-2"></i>
-                                            <div>
-                                                <strong>{{ _('Código DLT:') }}</strong> 
-                                                <span class="badge bg-primary fs-6 ms-2">{{ result.item_code }}</span>
-                                            </div>
-                                        </div>
-                                        {% endif %}
-
-                                        <div class="row g-3">
-                                            {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}
-                                                {% set value = result[field] if result[field] else 'N/A' %}
-                                                {% if value != 'N/A' %}
-                                                <div class="col-md-6">
-                                                    <strong>{{ field.replace('_', ' ').title() }}:</strong>
-                                                    <div class="text-muted small">{{ value }}</div>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-
-                                        {% if result.text_content %}
-                                            <div class="mt-4">
-                                                <strong>{{ _('Contenido Completo:') }}</strong>
-                                                <div class="bg-dark border p-3 rounded mt-2" style="max-height: 200px; overflow-y: auto; color: var(--bs-light);">
-                                                    <pre class="mb-0" style="white-space: pre-wrap; color: inherit;">{{ result.text_content }}</pre>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cerrar') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="card-body text-center py-5">
-                <div class="text-muted">
-                    <i data-feather="search" class="mb-3" style="width: 48px; height: 48px;"></i>
-                    <p class="mb-0">{{ _('No se encontraron resultados para tus criterios de búsqueda.') }}</p>
-                    <small>{{ _('Intenta ajustar los términos de búsqueda o limpiar algunos filtros.') }}</small>
-                </div>
-            </div>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i data-feather="list" class="me-2"></i>
+            Resultados de Búsqueda
+        </h5>
+        {% if total_count > 0 %}
+        <span class="badge bg-primary">{{ total_count }} resultado{{ 's' if total_count != 1 else '' }}</span>
         {% endif %}
     </div>
-{% else %}
-    <div class="card">
-        <div class="card-body text-center py-5">
-            <div class="text-muted">
-                <i data-feather="search" class="mb-3" style="width: 48px; height: 48px;"></i>
-                <p class="mb-0">{{ _('Ingresa criterios de búsqueda arriba para encontrar datos de radiodifusión.') }}</p>
-                <small>{{ _('Usa los campos del formulario para filtrar entre {{ total_records }} registros totales.') }}</small>
+    <div class="card-body">
+        {% if results %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Programa</th>
+                        <th>Fecha</th>
+                        <th>Duración</th>
+                        <th>Tipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>
+                            <div class="text-truncate" style="max-width: 200px;" title="{{ result.title or 'Sin título' }}">
+                                {{ result.title or 'Sin título' }}
+                            </div>
+                        </td>
+                        <td>{{ result.program_name or 'N/A' }}</td>
+                        <td>{{ result.program_date or 'N/A' }}</td>
+                        <td>{{ result.duration or 'N/A' }}</td>
+                        <td>{{ result.object_type or 'N/A' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal{{ result.id }}">
+                                <i data-feather="eye" class="me-1"></i>
+                                Ver
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i data-feather="search" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+            <h5 class="text-muted">No se encontraron resultados</h5>
+            <p class="text-muted">Intenta modificar los criterios de búsqueda.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Detail Modals -->
+{% for result in results %}
+<div class="modal fade" id="detailModal{{ result.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Elemento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}
+                        {% set value = result[field] if result[field] else 'N/A' %}
+                        {% if value != 'N/A' %}
+                        <div class="col-md-6">
+                            <strong>{{ field.replace('_', ' ').title() }}:</strong><br>
+                            <span class="text-muted">{{ value }}</span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if result.text_content %}
+                    <div class="col-12">
+                        <strong>Contenido de Texto:</strong><br>
+                        <div class="border rounded p-2 bg-light">
+                            {{ result.text_content }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-{% endif %}
-{% endblock %}
+</div>
+{% endfor %}
 
-{% block scripts %}
-<script>
-// Initialize modals and refresh feather icons when modals are shown
-document.addEventListener('DOMContentLoaded', function() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.addEventListener('shown.bs.modal', function() {
-            feather.replace();
-        });
-    });
-});
-</script>
+{% endif %}
+
 {% endblock %}

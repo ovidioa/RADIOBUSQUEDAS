@@ -1,99 +1,98 @@
+
 {% extends "base.html" %}
 
-{% block title %}{{ _('Administración del Sistema') }}{% endblock %}
+{% block title %}Administrar{% endblock %}
 
 {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i data-feather="settings" class="me-2"></i>
+        Administrar Sistema
+    </h2>
+</div>
+
 <div class="row">
-    <div class="col-lg-10 mx-auto">
-        <div class="text-center mb-5">
-            <h1 class="display-5 mb-3">
-                <i data-feather="settings" class="text-warning me-3"></i>
-                {{ _('Administración del Sistema') }}
-            </h1>
-            <p class="lead text-muted">{{ _('Gestiona archivos XML y base de datos') }}</p>
-        </div>
-
-        <div class="row g-4">
-            <!-- Process XML Files Card -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <i data-feather="upload" class="text-success me-2"></i>
-                            <h5 class="card-title mb-0">{{ _('Procesar Archivos XML') }}</h5>
-                        </div>
-                        <p class="card-text">{{ _('Carga y procesa archivos XML de radiodifusión para extraer datos a la base de datos.') }}</p>
-
-                        <form method="POST" action="{{ url_for('process_xml') }}" class="mb-3">
-                            <div class="mb-3">
-                                <label for="directory_path" class="form-label">{{ _('Ruta del Directorio') }}</label>
-                                <input type="text" class="form-control" id="directory_path" name="directory_path" 
-                                       placeholder="./attached_assets" value="./attached_assets">
-                                <div class="form-text">{{ _('Ingresa la ruta del directorio que contiene los archivos XML a procesar') }}</div>
-                            </div>
-                            <button type="submit" class="btn btn-success">
-                                <i data-feather="play" class="me-2"></i>
-                                {{ _('Procesar Archivos') }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Database Management Card -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <i data-feather="database" class="text-warning me-2"></i>
-                            <h5 class="card-title mb-0">{{ _('Gestión de Base de Datos') }}</h5>
-                        </div>
-                        <p class="card-text">{{ _('Elimina todos los registros de la base de datos para empezar de nuevo.') }}</p>
-                        <small class="text-muted d-block mb-3">{{ _('Esta acción no se puede deshacer.') }}</small>
-
-                        <form method="POST" action="{{ url_for('clear_database') }}" 
-                              onsubmit="return confirm('{{ _('¿Estás seguro de que quieres eliminar todos los registros de la base de datos? Esta acción no se puede deshacer.') }}');">
-                            <button type="submit" class="btn btn-outline-warning">
-                                <i data-feather="trash-2" class="me-2"></i>
-                                {{ _('Limpiar Base de Datos') }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Instructions Card -->
-        <div class="card mt-4">
+    <!-- XML Processing Card -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
             <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <i data-feather="info" class="text-secondary me-2"></i>
-                    <h5 class="card-title mb-0">{{ _('Instrucciones de Administración') }}</h5>
-                </div>
+                <h5 class="card-title">
+                    <i data-feather="file-text" class="me-2"></i>
+                    Procesar Archivos XML
+                </h5>
+                <p class="card-text">Procesa archivos XML desde un directorio específico y los carga en la base de datos.</p>
+                
+                <form method="POST" action="{{ url_for('process_xml') }}" class="mt-3">
+                    <div class="mb-3">
+                        <label for="directory_path" class="form-label">Ruta del Directorio</label>
+                        <input type="text" class="form-control" id="directory_path" name="directory_path" 
+                               placeholder="./attached_assets" value="./attached_assets">
+                        <small class="form-text text-muted">Déjalo vacío para usar el directorio por defecto (./attached_assets)</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i data-feather="upload" class="me-2"></i>
+                        Procesar Archivos
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="row">
+    <!-- Database Management Card -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i data-feather="database" class="me-2"></i>
+                    Gestión de Base de Datos
+                </h5>
+                <p class="card-text">Administra el contenido de la base de datos.</p>
+                
+                <div class="d-grid">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                        <i data-feather="trash-2" class="me-2"></i>
+                        Limpiar Base de Datos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Warning Cards -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                    <i data-feather="alert-triangle" class="me-2"></i>
+                    Instrucciones Importantes
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
                     <div class="col-md-6">
-                        <h6 class="text-success">
-                            <i data-feather="upload" class="me-2"></i>
-                            {{ _('Procesamiento de Archivos') }}
+                        <h6 class="text-primary">
+                            <i data-feather="file-text" class="me-2"></i>
+                            Procesamiento de XML
                         </h6>
                         <ul class="list-unstyled ms-3">
-                            <li class="mb-2">• {{ _('Asegúrate de que los archivos XML estén en el directorio especificado') }}</li>
-                            <li class="mb-2">• {{ _('Los archivos deben tener un formato XML válido') }}</li>
-                            <li class="mb-2">• {{ _('El procesamiento puede tomar varios minutos dependiendo del número de archivos') }}</li>
-                            <li class="mb-2">• {{ _('Los datos se extraerán automáticamente a la base de datos') }}</li>
+                            <li class="mb-2">• Los archivos XML deben estar en el directorio especificado</li>
+                            <li class="mb-2">• El sistema procesará todos los archivos .xml encontrados</li>
+                            <li class="mb-2">• Los archivos duplicados se actualizarán automáticamente</li>
+                            <li class="mb-2">• Puedes procesar el mismo directorio múltiples veces de forma segura</li>
                         </ul>
                     </div>
                     <div class="col-md-6">
                         <h6 class="text-warning">
                             <i data-feather="database" class="me-2"></i>
-                            {{ _('Gestión de Base de Datos') }}
+                            Gestión de Base de Datos
                         </h6>
                         <ul class="list-unstyled ms-3">
-                            <li class="mb-2">• {{ _('Usa "Limpiar Base de Datos" solo cuando necesites empezar de cero') }}</li>
-                            <li class="mb-2">• {{ _('Esta acción eliminará TODOS los registros existentes') }}</li>
-                            <li class="mb-2">• {{ _('No hay forma de recuperar los datos una vez eliminados') }}</li>
-                            <li class="mb-2">• {{ _('Considera hacer una copia de seguridad antes de limpiar') }}</li>
+                            <li class="mb-2">• Usa "Limpiar Base de Datos" solo cuando necesites empezar de cero</li>
+                            <li class="mb-2">• Esta acción eliminará TODOS los registros existentes</li>
+                            <li class="mb-2">• No hay forma de recuperar los datos una vez eliminados</li>
+                            <li class="mb-2">• Considera hacer una copia de seguridad antes de limpiar</li>
                         </ul>
                     </div>
                 </div>
@@ -101,4 +100,33 @@
         </div>
     </div>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i data-feather="alert-triangle" class="me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción eliminará TODOS los registros de la base de datos.
+                </div>
+                <p>¿Estás seguro de que quieres continuar? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="POST" action="{{ url_for('clear_database') }}" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i data-feather="trash-2" class="me-2"></i>
+                        Confirmar Eliminación
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
