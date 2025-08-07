@@ -154,15 +154,40 @@ class XMLProcessor:
         if text_contents:
             data['text_content'] = '\n\n'.join(text_contents)
         
-        # Extract item_code from various possible locations
-        item_code_elem = story_elem.find('.//itemCode[@t="ws"]')
-        if item_code_elem is not None and item_code_elem.text:
-            data['item_code'] = item_code_elem.text.strip()
-        else:
-            # Try alternative locations
-            item_code_elem = story_elem.find('.//item_code[@t="ws"]')
+        # Extract item_code - search all possible variations and locations
+        item_code = None
+        
+        # Try multiple tag names and attributes
+        search_patterns = [
+            './/itemCode[@t="ws"]',
+            './/item_code[@t="ws"]',
+            './/ItemCode[@t="ws"]',
+            './/itemCode',
+            './/item_code',
+            './/ItemCode',
+            './/ITEMCODE'
+        ]
+        
+        for pattern in search_patterns:
+            item_code_elem = story_elem.find(pattern)
             if item_code_elem is not None and item_code_elem.text:
-                data['item_code'] = item_code_elem.text.strip()
+                item_code = item_code_elem.text.strip()
+                break
+        
+        # If not found in elements, search in attributes and text content
+        if not item_code:
+            # Search for any element containing "DLT" in its text
+            for elem in story_elem.iter():
+                if elem.text and 'DLT' in elem.text:
+                    # Extract DLT code pattern
+                    import re
+                    dlt_match = re.search(r'DLT\d+', elem.text)
+                    if dlt_match:
+                        item_code = dlt_match.group()
+                        break
+        
+        if item_code:
+            data['item_code'] = item_code
         
         return data
 
@@ -218,15 +243,40 @@ class XMLProcessor:
             timing_data = self.extract_timing_flags(story_content)
             data.update(timing_data)
         
-        # Extract item_code from various possible locations
-        item_code_elem = story_pack.find('.//itemCode[@t="ws"]')
-        if item_code_elem is not None and item_code_elem.text:
-            data['item_code'] = item_code_elem.text.strip()
-        else:
-            # Try alternative locations
-            item_code_elem = story_pack.find('.//item_code[@t="ws"]')
+        # Extract item_code - search all possible variations and locations
+        item_code = None
+        
+        # Try multiple tag names and attributes
+        search_patterns = [
+            './/itemCode[@t="ws"]',
+            './/item_code[@t="ws"]',
+            './/ItemCode[@t="ws"]',
+            './/itemCode',
+            './/item_code',
+            './/ItemCode',
+            './/ITEMCODE'
+        ]
+        
+        for pattern in search_patterns:
+            item_code_elem = story_pack.find(pattern)
             if item_code_elem is not None and item_code_elem.text:
-                data['item_code'] = item_code_elem.text.strip()
+                item_code = item_code_elem.text.strip()
+                break
+        
+        # If not found in elements, search in attributes and text content
+        if not item_code:
+            # Search for any element containing "DLT" in its text
+            for elem in story_pack.iter():
+                if elem.text and 'DLT' in elem.text:
+                    # Extract DLT code pattern
+                    import re
+                    dlt_match = re.search(r'DLT\d+', elem.text)
+                    if dlt_match:
+                        item_code = dlt_match.group()
+                        break
+        
+        if item_code:
+            data['item_code'] = item_code
         
         return data
     
@@ -282,15 +332,40 @@ class XMLProcessor:
             timing_data = self.extract_timing_flags(story_content)
             data.update(timing_data)
         
-        # Extract item_code from various possible locations
-        item_code_elem = group_pack.find('.//itemCode[@t="ws"]')
-        if item_code_elem is not None and item_code_elem.text:
-            data['item_code'] = item_code_elem.text.strip()
-        else:
-            # Try alternative locations
-            item_code_elem = group_pack.find('.//item_code[@t="ws"]')
+        # Extract item_code - search all possible variations and locations
+        item_code = None
+        
+        # Try multiple tag names and attributes
+        search_patterns = [
+            './/itemCode[@t="ws"]',
+            './/item_code[@t="ws"]',
+            './/ItemCode[@t="ws"]',
+            './/itemCode',
+            './/item_code',
+            './/ItemCode',
+            './/ITEMCODE'
+        ]
+        
+        for pattern in search_patterns:
+            item_code_elem = group_pack.find(pattern)
             if item_code_elem is not None and item_code_elem.text:
-                data['item_code'] = item_code_elem.text.strip()
+                item_code = item_code_elem.text.strip()
+                break
+        
+        # If not found in elements, search in attributes and text content
+        if not item_code:
+            # Search for any element containing "DLT" in its text
+            for elem in group_pack.iter():
+                if elem.text and 'DLT' in elem.text:
+                    # Extract DLT code pattern
+                    import re
+                    dlt_match = re.search(r'DLT\d+', elem.text)
+                    if dlt_match:
+                        item_code = dlt_match.group()
+                        break
+        
+        if item_code:
+            data['item_code'] = item_code
         
         return data
     
