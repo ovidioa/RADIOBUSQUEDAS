@@ -41,9 +41,9 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label for="guid" class="form-label">GUID</label>
-                    <input type="text" class="form-control" id="guid" name="guid" 
-                           value="{{ search_params.get('guid', '') }}" placeholder="Buscar por GUID">
+                    <label for="item_code" class="form-label">DLT</label>
+                    <input type="text" class="form-control" id="item_code" name="item_code" 
+                           value="{{ search_params.get('item_code', '') }}" placeholder="ej. DLT15334975">
                 </div>
 
                 <div class="col-md-4">
@@ -150,9 +150,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label for="item_code" class="form-label">Código del Elemento</label>
-                        <input type="text" class="form-control" id="item_code" name="item_code" 
-                               value="{{ search_params.get('item_code', '') }}">
+                        <label for="guid" class="form-label">GUID</label>
+                        <input type="text" class="form-control" id="guid" name="guid" 
+                               value="{{ search_params.get('guid', '') }}">
                     </div>
 
                     <div class="col-md-6">
