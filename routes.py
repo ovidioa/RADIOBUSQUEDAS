@@ -1,7 +1,8 @@
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for, session
 from sqlalchemy import or_, and_
 from app import app, db
 from models import XMLData
+from flask_babel import gettext, ngettext
 # Import moved to avoid circular import
 import os
 
@@ -149,6 +150,18 @@ def clear_database():
     
     return redirect(url_for('index'))
 
+@app.route('/set_language/<language>')
+def set_language(language=None):
+    session['language'] = language
+    return redirect(request.referrer or url_for('index'))
+
+@app.context_processor
+def inject_conf_vars():
+    return {
+        'LANGUAGES': app.config['LANGUAGES'],
+        'CURRENT_LANGUAGE': session.get('language', 'es')
+    }
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('index.html'), 404
@@ -156,5 +169,5 @@ def not_found_error(error):
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    flash('Ocurrió un error interno. Por favor, inténtalo de nuevo.', 'error')
+    flash(gettext('Ocurrió un error interno. Por favor, inténtalo de nuevo.'), 'error')
     return render_template('index.html'), 500

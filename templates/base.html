@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Procesador de Datos de Difusión XML{% endblock %}</title>
+    <title>{% block title %}{{ _('Procesador de Datos de Difusión XML') }}{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
@@ -32,26 +32,44 @@
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i data-feather="radio" class="me-2"></i>
-                Procesador XML Radiodifusión
+                {{ _('Procesador XML Radiodifusión') }}
             </a>
             
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="{{ url_for('index') }}">
                     <i data-feather="home" class="me-1"></i>
-                    Inicio
+                    {{ _('Inicio') }}
                 </a>
                 <a class="nav-link" href="{{ url_for('search') }}">
                     <i data-feather="search" class="me-1"></i>
-                    Buscar
+                    {{ _('Buscar') }}
                 </a>
                 <a class="nav-link" href="{{ url_for('programs') }}">
                     <i data-feather="calendar" class="me-1"></i>
-                    Programas
+                    {{ _('Programas') }}
                 </a>
                 <a class="nav-link" href="{{ url_for('admin') }}">
                     <i data-feather="settings" class="me-1"></i>
-                    Administrar
+                    {{ _('Administrar') }}
                 </a>
+                
+                <!-- Language Selector -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i data-feather="globe" class="me-1"></i>
+                        {{ LANGUAGES[CURRENT_LANGUAGE] }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% for code, name in LANGUAGES.items() %}
+                        <li>
+                            <a class="dropdown-item {% if code == CURRENT_LANGUAGE %}active{% endif %}" 
+                               href="{{ url_for('set_language', language=code) }}">
+                                {{ name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -74,7 +92,7 @@
 
     <footer class="mt-5 py-4 bg-dark text-center">
         <div class="container">
-            <small class="text-muted">Procesador de Datos de Difusión XML - Extrae y busca datos de programación de radiodifusión</small>
+            <small class="text-muted">{{ _('Procesador de Datos de Difusión XML - Extrae y busca datos de programación de radiodifusión') }}</small>
         </div>
     </footer>
 

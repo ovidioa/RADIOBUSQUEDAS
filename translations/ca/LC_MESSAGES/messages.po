@@ -1,0 +1,89 @@
+
+# Catalan translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-01 12:00+0000\n"
+"PO-Revision-Date: 2025-01-01 12:00+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ca\n"
+"Language-Team: ca <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+msgid "Procesador de Datos de Difusión XML"
+msgstr "Processador de Dades de Difusió XML"
+
+msgid "Procesador XML Radiodifusión"
+msgstr "Processador XML Radiodifusió"
+
+msgid "Inicio"
+msgstr "Inici"
+
+msgid "Buscar"
+msgstr "Cercar"
+
+msgid "Programas"
+msgstr "Programes"
+
+msgid "Administrar"
+msgstr "Administrar"
+
+msgid "Procesador de Datos de Difusión XML - Extrae y busca datos de programación de radiodifusión"
+msgstr "Processador de Dades de Difusió XML - Extreu i cerca dades de programació de radiodifusió"
+
+msgid "Ocurrió un error interno. Por favor, inténtalo de nuevo."
+msgstr "Ha ocorregut un error intern. Si us plau, torna-ho a intentar."
+
+msgid "Búsqueda de Elementos de Difusión"
+msgstr "Cerca d'Elements de Difusió"
+
+msgid "Filtrar Resultados"
+msgstr "Filtrar Resultats"
+
+msgid "Buscar elementos"
+msgstr "Cercar elements"
+
+msgid "Total de registros en la base de datos"
+msgstr "Total de registres a la base de dades"
+
+msgid "No se encontraron resultados"
+msgstr "No s'han trobat resultats"
+
+msgid "resultados encontrados"
+msgstr "resultats trobats"
+
+msgid "Ver Detalles"
+msgstr "Veure Detalls"
+
+msgid "Cerrar"
+msgstr "Tancar"
+
+msgid "Programas por Fecha"
+msgstr "Programes per Data"
+
+msgid "Filtrar por Fecha y Programa"
+msgstr "Filtrar per Data i Programa"
+
+msgid "Administración del Sistema"
+msgstr "Administració del Sistema"
+
+msgid "Procesar Archivos XML"
+msgstr "Processar Arxius XML"
+
+msgid "Gestión de Base de Datos"
+msgstr "Gestió de Base de Dades"
+
+msgid "Procesar archivos"
+msgstr "Processar arxius"
+
+msgid "Limpiar base de datos"
+msgstr "Netejar base de dades"

@@ -1,8 +1,9 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, request, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from flask_babel import Babel, get_locale
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -20,8 +21,28 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-prod
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Initialize the app with the extension
+# Configure Babel
+app.config['LANGUAGES'] = {
+    'es': 'Español',
+    'ca': 'Català'
+}
+app.config['BABEL_DEFAULT_LOCALE'] = 'es'
+app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
+
+# Initialize extensions
 db.init_app(app)
+babel = Babel(app)
+
+@babel.localeselector
+def get_locale():
+    # 1. URL parameter has priority
+    if request.args.get('lang'):
+        session['language'] = request.args.get('lang')
+    # 2. Use session language
+    if 'language' in session and session['language'] in app.config['LANGUAGES'].keys():
+        return session['language']
+    # 3. Default to Spanish
+    return 'es'
 
 # Import routes and models
 from routes import *

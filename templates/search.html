@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Búsqueda - Procesador de Datos de Difusión XML{% endblock %}
+{% block title %}{{ _('Búsqueda de Elementos de Difusión') }}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>
         <i data-feather="search" class="me-2"></i>
-        Buscar Datos de Radiodifusión
+        {{ _('Buscar Datos de Radiodifusión') }}
     </h2>
     <div class="text-muted">
         <small>Total de registros en la base de datos: {{ total_records }}</small>
@@ -20,23 +20,23 @@
             <div class="row g-3">
                 <!-- Basic Search Fields -->
                 <div class="col-md-6">
-                    <label for="title" class="form-label">Título</label>
+                    <label for="title" class="form-label">{{ _('Título') }}</label>
                     <input type="text" class="form-control" id="title" name="title" 
-                           value="{{ search_params.get('title', '') }}" placeholder="Buscar en título">
+                           value="{{ search_params.get('title', '') }}" placeholder="{{ _('Buscar en título') }}">
                 </div>
 
                 <div class="col-md-6">
-                    <label for="text_content" class="form-label">Contenido de Texto</label>
+                    <label for="text_content" class="form-label">{{ _('Contenido de Texto') }}</label>
                     <input type="text" class="form-control" id="text_content" name="text_content" 
-                           value="{{ search_params.get('text_content', '') }}" placeholder="Buscar en contenido">
+                           value="{{ search_params.get('text_content', '') }}" placeholder="{{ _('Buscar en contenido') }}">
                 </div>
 
                 <div class="col-md-4">
-                    <label for="object_type" class="form-label">Tipo de Objeto</label>
+                    <label for="object_type" class="form-label">{{ _('Tipo de Objeto') }}</label>
                     <select class="form-select" id="object_type" name="object_type">
-                        <option value="">Todos los Tipos</option>
-                        <option value="StoryPack" {{ 'selected' if search_params.get('object_type') == 'StoryPack' }}>StoryPack</option>
-                        <option value="GroupPack" {{ 'selected' if search_params.get('object_type') == 'GroupPack' }}>GroupPack</option>
+                        <option value="">{{ _('Todos los Tipos') }}</option>
+                        <option value="StoryPack" {{ 'selected' if search_params.get('object_type') == 'StoryPack' }}>{{ _('StoryPack') }}</option>
+                        <option value="GroupPack" {{ 'selected' if search_params.get('object_type') == 'GroupPack' }}>{{ _('GroupPack') }}</option>
                     </select>
                 </div>
 
@@ -48,15 +48,15 @@
 
                 <!-- Date Fields -->
                 <div class="col-md-6">
-                    <label for="program_date" class="form-label">Fecha del Programa:</label>
+                    <label for="program_date" class="form-label">{{ _('Fecha del Programa:') }}</label>
                     <input type="date" class="form-control" id="program_date" name="program_date" 
                            value="{{ search_params.get('program_date', '') }}">
                 </div>
 
                 <div class="col-md-6">
-                    <label for="source_file" class="form-label">Archivo Fuente</label>
+                    <label for="source_file" class="form-label">{{ _('Archivo Fuente') }}</label>
                     <input type="text" class="form-control" id="source_file" name="source_file" 
-                           value="{{ search_params.get('source_file', '') }}" placeholder="Buscar por archivo fuente">
+                           value="{{ search_params.get('source_file', '') }}" placeholder="{{ _('Buscar por archivo fuente') }}">
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
             <div class="mt-3">
                 <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch">
                     <i data-feather="settings" class="me-1"></i>
-                    Opciones de Búsqueda Avanzada
+                    {{ _('Opciones de Búsqueda Avanzada') }}
                 </button>
             </div>
 
@@ -72,73 +72,73 @@
             <div class="collapse mt-3" id="advancedSearch">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label for="title_type" class="form-label">Tipo de Título</label>
+                        <label for="title_type" class="form-label">{{ _('Tipo de Título') }}</label>
                         <input type="text" class="form-control" id="title_type" name="title_type" 
                                value="{{ search_params.get('title_type', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="duration" class="form-label">Duración</label>
+                        <label for="duration" class="form-label">{{ _('Duración') }}</label>
                         <input type="text" class="form-control" id="duration" name="duration" 
                                value="{{ search_params.get('duration', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="language_cat" class="form-label">Idioma (Catalán)</label>
+                        <label for="language_cat" class="form-label">{{ _('Idioma (Catalán)') }}</label>
                         <input type="text" class="form-control" id="language_cat" name="language_cat" 
                                value="{{ search_params.get('language_cat', '') }}">
                     </div>
 
                     <div class="col-md-6">
-                        <label for="record_date" class="form-label">Fecha de Grabación</label>
+                        <label for="record_date" class="form-label">{{ _('Fecha de Grabación') }}</label>
                         <input type="text" class="form-control" id="record_date" name="record_date" 
                                value="{{ search_params.get('record_date', '') }}">
                     </div>
 
                     <div class="col-md-6">
-                        <label for="site_name" class="form-label">Nombre del Sitio</label>
+                        <label for="site_name" class="form-label">{{ _('Nombre del Sitio') }}</label>
                         <input type="text" class="form-control" id="site_name" name="site_name" 
                                value="{{ search_params.get('site_name', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="computed_start_time" class="form-label">Hora de Inicio Computada</label>
+                        <label for="computed_start_time" class="form-label">{{ _('Hora de Inicio Computada') }}</label>
                         <input type="text" class="form-control" id="computed_start_time" name="computed_start_time" 
                                value="{{ search_params.get('computed_start_time', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="planned_duration" class="form-label">Durada Planificada</label>
+                        <label for="planned_duration" class="form-label">{{ _('Durada Planificada') }}</label>
                         <input type="text" class="form-control" id="planned_duration" name="planned_duration" 
                                value="{{ search_params.get('planned_duration', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="calculated_duration" class="form-label">Durada Calculada</label>
+                        <label for="calculated_duration" class="form-label">{{ _('Durada Calculada') }}</label>
                         <input type="text" class="form-control" id="calculated_duration" name="calculated_duration" 
                                value="{{ search_params.get('calculated_duration', '') }}">
                     </div>
 
                     <div class="col-md-6">
-                        <label for="reporter" class="form-label">Redactor</label>
+                        <label for="reporter" class="form-label">{{ _('Redactor') }}</label>
                         <input type="text" class="form-control" id="reporter" name="reporter" 
                                value="{{ search_params.get('reporter', '') }}">
                     </div>
 
                     <div class="col-md-6">
-                        <label for="guest" class="form-label">Convidado</label>
+                        <label for="guest" class="form-label">{{ _('Convidado') }}</label>
                         <input type="text" class="form-control" id="guest" name="guest" 
                                value="{{ search_params.get('guest', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="contact" class="form-label">Contacto</label>
+                        <label for="contact" class="form-label">{{ _('Contacto') }}</label>
                         <input type="text" class="form-control" id="contact" name="contact" 
                                value="{{ search_params.get('contact', '') }}">
                     </div>
 
                     <div class="col-md-4">
-                        <label for="contact_phone" class="form-label">Teléfono Contacto</label>
+                        <label for="contact_phone" class="form-label">{{ _('Teléfono Contacto') }}</label>
                         <input type="text" class="form-control" id="contact_phone" name="contact_phone" 
                                value="{{ search_params.get('contact_phone', '') }}">
                     </div>
@@ -162,7 +162,7 @@
                     </div>
 
                     <div class="col-md-12">
-                        <label for="observations" class="form-label">Observaciones</label>
+                        <label for="observations" class="form-label">{{ _('Observaciones') }}</label>
                         <input type="text" class="form-control" id="observations" name="observations" 
                                value="{{ search_params.get('observations', '') }}">
                     </div>
@@ -172,17 +172,17 @@
                 <div class="mt-4">
                     <h6 class="text-info">
                         <i data-feather="calendar" class="me-1"></i>
-                        Búsqueda por Programa
+                        {{ _('Búsqueda por Programa') }}
                     </h6>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="program_name" class="form-label">Nombre del Programa</label>
+                            <label for="program_name" class="form-label">{{ _('Nombre del Programa') }}</label>
                             <input type="text" class="form-control" id="program_name" name="program_name" 
-                                   value="{{ search_params.get('program_name', '') }}" placeholder="ej. INFORMATIU MATI 07 H">
+                                   value="{{ search_params.get('program_name', '') }}" placeholder="{{ _('ej. INFORMATIU MATI 07 H') }}">
                         </div>
 
                         <div class="col-md-6">
-                            <label for="program_date" class="form-label">Fecha del Programa</label>
+                            <label for="program_date" class="form-label">{{ _('Fecha del Programa') }}</label>
                             <input type="date" class="form-control" id="program_date" name="program_date" 
                                    value="{{ search_params.get('program_date', '') }}">
                         </div>
@@ -194,11 +194,11 @@
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
                     <i data-feather="search" class="me-2"></i>
-                    Buscar
+                    {{ _('Buscar') }}
                 </button>
                 <a href="{{ url_for('search') }}" class="btn btn-outline-secondary">
                     <i data-feather="x-circle" class="me-2"></i>
-                    Limpiar
+                    {{ _('Limpiar') }}
                 </a>
             </div>
         </form>
@@ -211,9 +211,9 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
                 <i data-feather="list" class="me-2"></i>
-                Resultados de Búsqueda
+                {{ _('Resultados de Búsqueda') }}
                 {% if total_count > 0 %}
-                    <span class="badge bg-primary ms-2">{{ total_count }} encontrados</span>
+                    <span class="badge bg-primary ms-2">{{ total_count }} {{ _('encontrados') }}</span>
                 {% endif %}
             </h5>
         </div>
@@ -223,14 +223,14 @@
                 <table class="table table-striped results-table mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
-                            <th>Tipo</th>
-                            <th>Título</th>
-                            <th>Programa</th>
-                            <th>Fecha Programa</th>
-                            <th>Vista Previa del Contenido</th>
-                            <th>Duración</th>
-                            <th>Acciones</th>
+                            <th>{{ _('ID') }}</th>
+                            <th>{{ _('Tipo') }}</th>
+                            <th>{{ _('Título') }}</th>
+                            <th>{{ _('Programa') }}</th>
+                            <th>{{ _('Fecha Programa') }}</th>
+                            <th>{{ _('Vista Previa del Contenido') }}</th>
+                            <th>{{ _('Duración') }}</th>
+                            <th>{{ _('Acciones') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -244,8 +244,8 @@
                                     {{ result.object_type or 'N/A' }}
                                 </span>
                             </td>
-                            <td class="text-truncate-200" title="{{ result.title or 'Sin título' }}">
-                                {{ result.title or 'Sin título' }}
+                            <td class="text-truncate-200" title="{{ result.title or _('Sin título') }}">
+                                {{ result.title or _('Sin título') }}
                             </td>
                             <td class="text-truncate-150" title="{{ result.program_name or 'N/A' }}">
                                 <small class="text-muted">{{ result.program_name or 'N/A' }}</small>
@@ -253,8 +253,8 @@
                             <td>
                                 <small class="text-muted">{{ result.program_date or '' }}</small>
                             </td>
-                            <td class="text-truncate-200" title="{{ result.text_content or 'Sin contenido' }}">
-                                {{ (result.text_content[:100] + '...') if result.text_content and result.text_content|length > 100 else (result.text_content or 'Sin contenido') }}
+                            <td class="text-truncate-200" title="{{ result.text_content or _('Sin contenido') }}">
+                                {{ (result.text_content[:100] + '...') if result.text_content and result.text_content|length > 100 else (result.text_content or _('Sin contenido')) }}
                             </td>
                             <td>
                                 <small class="text-muted">{{ result.duration or 'N/A' }}</small>
@@ -275,7 +275,7 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title">
                                             <i data-feather="info"></i>
-                                            Detalles del Registro - ID: {{ result.object_id or result.id }}
+                                            {{ _('Detalles del Registro - ID:') }} {{ result.object_id or result.id }}
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
@@ -285,12 +285,12 @@
                                         <div class="alert alert-info d-flex align-items-center mb-3">
                                             <i data-feather="tag" class="me-2"></i>
                                             <div>
-                                                <strong>Código DLT:</strong> 
+                                                <strong>{{ _('Código DLT:') }}</strong> 
                                                 <span class="badge bg-primary fs-6 ms-2">{{ result.item_code }}</span>
                                             </div>
                                         </div>
                                         {% endif %}
-                                        
+
                                         <div class="row g-3">
                                             {% for field in ['object_id', 'item_code', 'object_type', 'title', 'program_name', 'program_date', 'duration', 'broadcast_start_time', 'broadcast_end_time', 'computed_start_time', 'planned_duration', 'calculated_duration', 'reporter', 'guest', 'contact', 'contact_phone', 'edi', 'lin', 'observations', 'title_type', 'record_date', 'source_file', 'guid'] %}
                                                 {% set value = result[field] if result[field] else 'N/A' %}
@@ -305,7 +305,7 @@
 
                                         {% if result.text_content %}
                                             <div class="mt-4">
-                                                <strong>Contenido Completo:</strong>
+                                                <strong>{{ _('Contenido Completo:') }}</strong>
                                                 <div class="bg-dark border p-3 rounded mt-2" style="max-height: 200px; overflow-y: auto; color: var(--bs-light);">
                                                     <pre class="mb-0" style="white-space: pre-wrap; color: inherit;">{{ result.text_content }}</pre>
                                                 </div>
@@ -313,7 +313,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cerrar') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -326,8 +326,8 @@
             <div class="card-body text-center py-5">
                 <div class="text-muted">
                     <i data-feather="search" class="mb-3" style="width: 48px; height: 48px;"></i>
-                    <p class="mb-0">No se encontraron resultados para tus criterios de búsqueda.</p>
-                    <small>Intenta ajustar los términos de búsqueda o limpiar algunos filtros.</small>
+                    <p class="mb-0">{{ _('No se encontraron resultados para tus criterios de búsqueda.') }}</p>
+                    <small>{{ _('Intenta ajustar los términos de búsqueda o limpiar algunos filtros.') }}</small>
                 </div>
             </div>
         {% endif %}
@@ -337,8 +337,8 @@
         <div class="card-body text-center py-5">
             <div class="text-muted">
                 <i data-feather="search" class="mb-3" style="width: 48px; height: 48px;"></i>
-                <p class="mb-0">Ingresa criterios de búsqueda arriba para encontrar datos de radiodifusión.</p>
-                <small>Usa los campos del formulario para filtrar entre {{ total_records }} registros totales.</small>
+                <p class="mb-0">{{ _('Ingresa criterios de búsqueda arriba para encontrar datos de radiodifusión.') }}</p>
+                <small>{{ _('Usa los campos del formulario para filtrar entre {{ total_records }} registros totales.') }}</small>
             </div>
         </div>
     </div>
