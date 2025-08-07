@@ -18,23 +18,27 @@
 
     <style>
         :root {
-            --ib3-blue: #004c8c;
-            --ib3-light-blue: #0066cc;
-            --ib3-dark-blue: #003366;
+            --ib3-blue: #0051a0;
+            --ib3-light-blue: #1e6bb8;
+            --ib3-dark-blue: #003d7a;
             --ib3-orange: #ff6600;
-            --ib3-gray: #f5f5f5;
-            --ib3-dark-gray: #333333;
+            --ib3-red: #e31e24;
+            --ib3-gray: #f4f4f4;
+            --ib3-dark-gray: #2d2d2d;
+            --ib3-text-gray: #666666;
         }
         
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             letter-spacing: -0.01em;
+            min-height: 100vh;
         }
         
         .navbar-dark {
             background: linear-gradient(135deg, var(--ib3-blue) 0%, var(--ib3-dark-blue) 100%) !important;
-            box-shadow: 0 2px 10px rgba(0, 76, 140, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 81, 160, 0.4);
+            border-bottom: 2px solid var(--ib3-orange);
         }
         
         .navbar-brand {
@@ -61,19 +65,27 @@
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 81, 160, 0.3);
         }
         
         .btn-primary:hover {
             background: linear-gradient(45deg, var(--ib3-dark-blue), var(--ib3-blue));
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 76, 140, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 81, 160, 0.4);
         }
         
         .btn-info {
-            background: linear-gradient(45deg, var(--ib3-light-blue), #00aaff);
+            background: linear-gradient(45deg, var(--ib3-light-blue), var(--ib3-blue));
             border: none;
             border-radius: 8px;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(30, 107, 184, 0.3);
+        }
+        
+        .btn-info:hover {
+            background: linear-gradient(45deg, var(--ib3-blue), var(--ib3-dark-blue));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 107, 184, 0.4);
         }
         
         .btn-success {
@@ -88,19 +100,28 @@
             border: none;
             border-radius: 8px;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 102, 0, 0.3);
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(45deg, #e55a00, var(--ib3-orange));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
         }
         
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            background: #2d2d2d;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #2d2d2d 0%, #353535 100%);
             transition: all 0.3s ease;
+            border: 1px solid rgba(0, 81, 160, 0.2);
         }
         
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 76, 140, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 81, 160, 0.3);
+            border-color: var(--ib3-orange);
         }
         
         .card-header {
@@ -108,6 +129,7 @@
             color: white;
             border-radius: 12px 12px 0 0 !important;
             font-weight: 600;
+            border-bottom: 2px solid var(--ib3-orange);
         }
         
         .search-form {
@@ -118,17 +140,21 @@
         
         .form-control {
             border-radius: 8px;
-            border: 1px solid #404040;
+            border: 2px solid #404040;
             background-color: #3d3d3d;
             color: white;
             transition: all 0.3s ease;
         }
         
         .form-control:focus {
-            border-color: var(--ib3-light-blue);
-            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
-            background-color: #3d3d3d;
+            border-color: var(--ib3-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 102, 0, 0.25);
+            background-color: #404040;
             color: white;
+        }
+        
+        .form-control:hover {
+            border-color: var(--ib3-light-blue);
         }
         
         .form-label {
@@ -145,6 +171,7 @@
             color: white;
             font-weight: 600;
             border: none;
+            border-bottom: 2px solid var(--ib3-orange);
         }
         
         .table-dark td {
@@ -163,8 +190,8 @@
             text-overflow: ellipsis;
         }
         
-        .display-4 {
-            background: linear-gradient(135deg, var(--ib3-blue), var(--ib3-light-blue));
+        .display-4, .display-3 {
+            background: linear-gradient(135deg, var(--ib3-blue), var(--ib3-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -172,6 +199,10 @@
         }
         
         .text-primary {
+            color: var(--ib3-orange) !important;
+        }
+        
+        .text-info {
             color: var(--ib3-light-blue) !important;
         }
         
@@ -183,21 +214,25 @@
         .alert-success {
             background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
+            border-left: 4px solid #20c997;
         }
         
         .alert-danger {
-            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            background: linear-gradient(45deg, var(--ib3-red), #ff4757);
             color: white;
+            border-left: 4px solid var(--ib3-red);
         }
         
         .alert-info {
-            background: linear-gradient(45deg, var(--ib3-light-blue), #00aaff);
+            background: linear-gradient(45deg, var(--ib3-blue), var(--ib3-light-blue));
             color: white;
+            border-left: 4px solid var(--ib3-orange);
         }
         
         footer {
             background: linear-gradient(135deg, var(--ib3-dark-blue), var(--ib3-blue)) !important;
-            border-top: 3px solid var(--ib3-orange);
+            border-top: 4px solid var(--ib3-orange);
+            box-shadow: 0 -4px 20px rgba(0, 81, 160, 0.3);
         }
         
         .badge {
@@ -207,13 +242,20 @@
         }
         
         .bg-primary {
-            background: linear-gradient(45deg, var(--ib3-blue), var(--ib3-light-blue)) !important;
+            background: linear-gradient(45deg, var(--ib3-blue), var(--ib3-orange)) !important;
         }
         
         .list-group-item {
             background-color: #2d2d2d;
-            border-color: #404040;
+            border-color: rgba(0, 81, 160, 0.3);
             color: #e0e0e0;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .list-group-item:hover {
+            border-left-color: var(--ib3-orange);
+            background-color: #353535;
         }
         
         /* Animaciones suaves */
