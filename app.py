@@ -33,7 +33,7 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 db.init_app(app)
 babel = Babel(app)
 
-@babel.localeselector
+@babel.locale_selector_function
 def get_locale():
     # 1. URL parameter has priority
     if request.args.get('lang'):
