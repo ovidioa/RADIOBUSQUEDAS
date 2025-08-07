@@ -37,7 +37,7 @@
                         <input type="text" class="form-control" id="program" name="program" 
                                value="{{ selected_program }}" placeholder="ej. INFORMATIU MATI" list="program-suggestions">
                         <datalist id="program-suggestions">
-                            {% for program_name in unique_program_names %}
+                            {% for program_name in program_names %}
                             <option value="{{ program_name }}">
                             {% endfor %}
                         </datalist>
