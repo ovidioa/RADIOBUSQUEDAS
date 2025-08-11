@@ -1,8 +1,8 @@
-
 from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy import or_, and_
 from app import app, db
 from models import XMLData
+# Import moved to avoid circular import
 import os
 
 @app.route('/')
@@ -118,39 +118,20 @@ def programs():
     
     # Apply filters if provided
     filtered_results = []
-    programs_by_date = []
-    
-    if selected_date and not selected_program:
-        # Show only programs list for the selected date
-        programs_by_date = db.session.query(
-            XMLData.program_name,
-            XMLData.program_date,
-            db.func.count(XMLData.id).label('story_count')
-        ).filter(
-            XMLData.program_date == selected_date,
-            XMLData.program_name.isnot(None)
-        ).group_by(
-            XMLData.program_name,
-            XMLData.program_date
-        ).order_by(XMLData.program_name).all()
+    if selected_date or selected_program:
+        query = XMLData.query
         
-    elif selected_date and selected_program:
-        # Show detailed content for specific program and date
-        query = XMLData.query.filter(
-            XMLData.program_date == selected_date,
-            XMLData.program_name.contains(selected_program)
-        )
-        filtered_results = query.limit(100).all()
+        if selected_date:
+            query = query.filter(XMLData.program_date == selected_date)
         
-    elif selected_program and not selected_date:
-        # Show content for program across all dates
-        query = XMLData.query.filter(XMLData.program_name.contains(selected_program))
+        if selected_program:
+            query = query.filter(XMLData.program_name.contains(selected_program))
+        
         filtered_results = query.limit(100).all()
     
     return render_template('programs.html', 
                          programs_data=programs_data,
                          filtered_results=filtered_results,
-                         programs_by_date=programs_by_date,
                          selected_date=selected_date,
                          selected_program=selected_program,
                          program_names=program_names)
