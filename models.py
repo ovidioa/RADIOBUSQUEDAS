@@ -1,6 +1,7 @@
 from app import db
 from sqlalchemy import Text, Integer, DateTime
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class XMLData(db.Model):
     __tablename__ = 'xml_data'
@@ -87,3 +88,20 @@ class XMLData(db.Model):
     
     def __repr__(self):
         return f'<XMLData {self.id}: {self.title}>'
+
+class User(db.Model):
+    __tablename__ = 'users'
+    
+    id = db.Column(Integer, primary_key=True)
+    username = db.Column(Text, unique=True, nullable=False)
+    password_hash = db.Column(Text, nullable=False)
+    created_at = db.Column(DateTime, default=datetime.utcnow)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+    def __repr__(self):
+        return f'<User {self.username}>'

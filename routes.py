@@ -1,16 +1,58 @@
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for, session
+from functools import wraps
 from sqlalchemy import or_, and_
 from app import app, db
-from models import XMLData
+from models import XMLData, User
 # Import moved to avoid circular import
 import os
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        if not username or not password:
+            flash('Por favor ingresa usuario y contraseña', 'error')
+            return render_template('login.html')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            flash('Sesión iniciada correctamente', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Usuario o contraseña incorrectos', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Cerrar sesión"""
+    session.pop('user_id', None)
+    session.pop('username', None)
+    flash('Sesión cerrada correctamente', 'success')
+    return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def index():
     """Home page with processing options"""
     return render_template('index.html')
 
 @app.route('/process', methods=['POST'])
+@login_required
 def process_xml():
     """Process XML files from a directory"""
     directory_path = request.form.get('directory_path', '').strip()
@@ -33,6 +75,7 @@ def process_xml():
     return redirect(url_for('search'))
 
 @app.route('/search')
+@login_required
 def search():
     """Search page with form and results"""
     # Get search parameters
@@ -80,11 +123,13 @@ def search():
                          total_records=total_records)
 
 @app.route('/admin')
+@login_required
 def admin():
     """Administration page for XML processing and database management"""
     return render_template('admin.html')
 
 @app.route('/programs')
+@login_required
 def programs():
     """Show programs by date"""
     # Get distinct programs with their dates
@@ -137,6 +182,7 @@ def programs():
                          program_names=program_names)
 
 @app.route('/clear_database', methods=['POST'])
+@login_required
 def clear_database():
     """Clear all records from the database"""
     try:
