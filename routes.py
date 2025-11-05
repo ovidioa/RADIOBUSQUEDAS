@@ -10,6 +10,17 @@ import io
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
+# Constants
+MAX_EXPORT_TEXT_LENGTH = 500  # Maximum characters for text content in exports
+
+def get_story_only_filter():
+    """Helper function to get filter for Story type records only.
+    Excludes GroupPack and StoryPack types as per Phase 8."""
+    return or_(
+        XMLData.object_type == 'Story',
+        XMLData.object_type.is_(None)
+    )
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -99,12 +110,7 @@ def search():
         # Exclude GroupPack and StoryPack types by default (as per Phase 8)
         # Only show Story type unless explicitly searching for a specific type
         if 'object_type' not in search_params:
-            query = query.filter(
-                or_(
-                    XMLData.object_type == 'Story',
-                    XMLData.object_type.is_(None)
-                )
-            )
+            query = query.filter(get_story_only_filter())
         
         # Add filters for each search parameter
         filters = []
@@ -155,14 +161,8 @@ def advanced_search():
         query = XMLData.query
         
         # Exclude GroupPack and StoryPack types by default (as per Phase 8)
-        # Only show Story type unless explicitly searching for a specific type
         if 'object_type' not in search_params:
-            query = query.filter(
-                or_(
-                    XMLData.object_type == 'Story',
-                    XMLData.object_type.is_(None)
-                )
-            )
+            query = query.filter(get_story_only_filter())
         
         # Add filters for each search parameter
         filters = []
@@ -264,12 +264,7 @@ def export():
     
     # Exclude GroupPack and StoryPack types by default (as per Phase 8)
     if 'object_type' not in search_params:
-        query = query.filter(
-            or_(
-                XMLData.object_type == 'Story',
-                XMLData.object_type.is_(None)
-            )
-        )
+        query = query.filter(get_story_only_filter())
     
     if search_params:
         filters = []
@@ -281,7 +276,8 @@ def export():
         if filters:
             query = query.filter(and_(*filters))
     
-    # Get all matching results (not limited to 100 for export)
+    # Get all matching results
+    # Note: For very large datasets, consider implementing streaming or pagination
     results = query.all()
     
     if not results:
@@ -311,8 +307,8 @@ def export():
             for field in base_fields:
                 value = getattr(result, field, '')
                 # Truncate text_content if too long
-                if field == 'text_content' and value and len(str(value)) > 500:
-                    value = str(value)[:500] + '...'
+                if field == 'text_content' and value and len(str(value)) > MAX_EXPORT_TEXT_LENGTH:
+                    value = str(value)[:MAX_EXPORT_TEXT_LENGTH] + '...'
                 row.append(value or '')
             writer.writerow(row)
         
@@ -332,8 +328,8 @@ def export():
                 value = getattr(result, field, '')
                 if value:
                     # Truncate text_content if too long
-                    if field == 'text_content' and len(str(value)) > 500:
-                        value = str(value)[:500] + '...'
+                    if field == 'text_content' and len(str(value)) > MAX_EXPORT_TEXT_LENGTH:
+                        value = str(value)[:MAX_EXPORT_TEXT_LENGTH] + '...'
                     elem = ET.SubElement(item, field)
                     elem.text = str(value)
         
@@ -364,10 +360,7 @@ def programs():
     ).filter(
         XMLData.program_name.isnot(None),
         XMLData.program_date.isnot(None),
-        or_(
-            XMLData.object_type == 'Story',
-            XMLData.object_type.is_(None)
-        )
+        get_story_only_filter()
     ).group_by(
         XMLData.program_name,
         XMLData.program_date
@@ -381,10 +374,7 @@ def programs():
         XMLData.program_name
     ).filter(
         XMLData.program_name.isnot(None),
-        or_(
-            XMLData.object_type == 'Story',
-            XMLData.object_type.is_(None)
-        )
+        get_story_only_filter()
     ).distinct().order_by(XMLData.program_name).all()
     
     program_names = [program[0] for program in unique_programs]
@@ -396,12 +386,7 @@ def programs():
     # Apply filters if provided
     filtered_results = []
     if selected_date or selected_program:
-        query = XMLData.query.filter(
-            or_(
-                XMLData.object_type == 'Story',
-                XMLData.object_type.is_(None)
-            )
-        )
+        query = XMLData.query.filter(get_story_only_filter())
         
         if selected_date:
             query = query.filter(XMLData.program_date == selected_date)
