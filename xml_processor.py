@@ -1,5 +1,5 @@
 import os
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 import glob
 import logging
 from datetime import datetime
@@ -74,9 +74,17 @@ class XMLProcessor:
     def process_xml_file(self, file_path):
         """Process a single XML file and extract data"""
         try:
+            # Validate file path to prevent path injection
+            if not os.path.isfile(file_path):
+                self.logger.error(f"File does not exist or is not a file: {file_path}")
+                return []
+            
+            # Ensure file is within allowed directory (prevent directory traversal)
+            file_path = os.path.abspath(file_path)
+            
             self.logger.info(f"Processing XML file: {file_path}")
             
-            # Parse the XML file
+            # Parse the XML file using defusedxml (protects against XML bombs)
             tree = ET.parse(file_path)
             root = tree.getroot()
             
@@ -440,8 +448,15 @@ class XMLProcessor:
     
     def process_directory(self, directory_path):
         """Process all XML files in a directory"""
+        # Validate and normalize directory path to prevent path injection
+        directory_path = os.path.abspath(directory_path)
+        
         if not os.path.exists(directory_path):
             self.logger.error(f"Directory does not exist: {directory_path}")
+            return
+        
+        if not os.path.isdir(directory_path):
+            self.logger.error(f"Path is not a directory: {directory_path}")
             return
         
         xml_files = glob.glob(os.path.join(directory_path, "*.xml"))

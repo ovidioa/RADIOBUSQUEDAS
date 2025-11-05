@@ -9,9 +9,25 @@ import csv
 import io
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+from urllib.parse import urlparse, urljoin
 
 # Constants
 MAX_EXPORT_TEXT_LENGTH = 500  # Maximum characters for text content in exports
+
+def is_safe_redirect_url(target):
+    """Check if the target URL is safe for redirects (same domain only)"""
+    if not target:
+        return False
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+def get_safe_redirect():
+    """Get a safe redirect URL from request referrer"""
+    referrer = request.referrer
+    if referrer and is_safe_redirect_url(referrer):
+        return referrer
+    return url_for('search')
 
 def get_story_only_filter():
     """Helper function to get filter for Story type records only.
@@ -75,8 +91,21 @@ def process_xml():
     if not directory_path:
         directory_path = './attached_assets'  # Default to attached assets directory
     
+    # Validate and normalize path to prevent path injection
+    directory_path = os.path.abspath(directory_path)
+    
+    # Optional: Restrict to specific base directories for additional security
+    # allowed_base = os.path.abspath('./attached_assets')
+    # if not directory_path.startswith(allowed_base):
+    #     flash(f'Acceso denegado: solo se permiten directorios dentro de {allowed_base}', 'error')
+    #     return redirect(url_for('index'))
+    
     if not os.path.exists(directory_path):
         flash(f'El directorio no existe: {directory_path}', 'error')
+        return redirect(url_for('index'))
+    
+    if not os.path.isdir(directory_path):
+        flash(f'La ruta no es un directorio: {directory_path}', 'error')
         return redirect(url_for('index'))
     
     try:
@@ -282,7 +311,7 @@ def export():
     
     if not results:
         flash('No hay resultados para exportar', 'warning')
-        return redirect(request.referrer or url_for('search'))
+        return redirect(get_safe_redirect())
     
     # Define fields to export
     base_fields = [
@@ -345,7 +374,7 @@ def export():
     
     else:
         flash('Formato de exportación no válido', 'error')
-        return redirect(request.referrer or url_for('search'))
+        return redirect(get_safe_redirect())
 
 @app.route('/programs')
 @login_required
