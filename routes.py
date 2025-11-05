@@ -96,6 +96,16 @@ def search():
         # Build query based on search parameters
         query = XMLData.query
         
+        # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+        # Only show Story type unless explicitly searching for a specific type
+        if 'object_type' not in search_params:
+            query = query.filter(
+                or_(
+                    XMLData.object_type == 'Story',
+                    XMLData.object_type.is_(None)
+                )
+            )
+        
         # Add filters for each search parameter
         filters = []
         
@@ -143,6 +153,16 @@ def advanced_search():
     if search_params:
         # Build query based on search parameters
         query = XMLData.query
+        
+        # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+        # Only show Story type unless explicitly searching for a specific type
+        if 'object_type' not in search_params:
+            query = query.filter(
+                or_(
+                    XMLData.object_type == 'Story',
+                    XMLData.object_type.is_(None)
+                )
+            )
         
         # Add filters for each search parameter
         filters = []
@@ -242,6 +262,15 @@ def export():
     # Build query based on search parameters
     query = XMLData.query
     
+    # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+    if 'object_type' not in search_params:
+        query = query.filter(
+            or_(
+                XMLData.object_type == 'Story',
+                XMLData.object_type.is_(None)
+            )
+        )
+    
     if search_params:
         filters = []
         for field, value in search_params.items():
@@ -327,13 +356,18 @@ def export():
 def programs():
     """Show programs by date"""
     # Get distinct programs with their dates
+    # Exclude GroupPack and StoryPack types by default (as per Phase 8)
     programs_data = db.session.query(
         XMLData.program_name,
         XMLData.program_date,
         db.func.count(XMLData.id).label('story_count')
     ).filter(
         XMLData.program_name.isnot(None),
-        XMLData.program_date.isnot(None)
+        XMLData.program_date.isnot(None),
+        or_(
+            XMLData.object_type == 'Story',
+            XMLData.object_type.is_(None)
+        )
     ).group_by(
         XMLData.program_name,
         XMLData.program_date
@@ -346,7 +380,11 @@ def programs():
     unique_programs = db.session.query(
         XMLData.program_name
     ).filter(
-        XMLData.program_name.isnot(None)
+        XMLData.program_name.isnot(None),
+        or_(
+            XMLData.object_type == 'Story',
+            XMLData.object_type.is_(None)
+        )
     ).distinct().order_by(XMLData.program_name).all()
     
     program_names = [program[0] for program in unique_programs]
@@ -358,7 +396,12 @@ def programs():
     # Apply filters if provided
     filtered_results = []
     if selected_date or selected_program:
-        query = XMLData.query
+        query = XMLData.query.filter(
+            or_(
+                XMLData.object_type == 'Story',
+                XMLData.object_type.is_(None)
+            )
+        )
         
         if selected_date:
             query = query.filter(XMLData.program_date == selected_date)
