@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Búsqueda Avanzada - Procesador de Datos de Difusión XML{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i data-feather="filter" class="me-2"></i>
+        Búsqueda Avanzada
+    </h2>
+    <div class="text-muted">
+        <small>Total de registros en la base de datos: {{ total_records }}</small>
+    </div>
+</div>
+
+<!-- Advanced Search Form -->
+<div class="card search-form mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('advanced_search') }}">
+            <div class="row g-3">
+                <!-- Text Content Search -->
+                <div class="col-md-6">
+                    <label for="text_content" class="form-label">Contenido de Texto</label>
+                    <input type="text" class="form-control" id="text_content" name="text_content" 
+                           value="{{ search_params.get('text_content', '') }}" 
+                           placeholder="Buscar en el contenido del texto">
+                </div>
+
+                <!-- Title Search -->
+                <div class="col-md-6">
+                    <label for="title" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="title" name="title" 
+                           value="{{ search_params.get('title', '') }}" 
+                           placeholder="Buscar en título">
+                </div>
+
+                <!-- Program Name -->
+                <div class="col-md-6">
+                    <label for="program_name" class="form-label">Nombre del Programa</label>
+                    <input type="text" class="form-control" id="program_name" name="program_name" 
+                           value="{{ search_params.get('program_name', '') }}" 
+                           placeholder="Nombre del programa">
+                </div>
+
+                <!-- Program Date -->
+                <div class="col-md-6">
+                    <label for="program_date" class="form-label">Fecha del Programa</label>
+                    <input type="date" class="form-control" id="program_date" name="program_date" 
+                           value="{{ search_params.get('program_date', '') }}">
+                </div>
+
+                <!-- Program Start Time -->
+                <div class="col-md-6">
+                    <label for="program_start_time" class="form-label">Hora de Inicio del Programa</label>
+                    <input type="text" class="form-control" id="program_start_time" name="program_start_time" 
+                           value="{{ search_params.get('program_start_time', '') }}" 
+                           placeholder="ej. 07:00">
+                </div>
+
+                <!-- Story Broadcast Time -->
+                <div class="col-md-6">
+                    <label for="broadcast_start_time" class="form-label">Hora de Emisión de Historia</label>
+                    <input type="text" class="form-control" id="broadcast_start_time" name="broadcast_start_time" 
+                           value="{{ search_params.get('broadcast_start_time', '') }}" 
+                           placeholder="Hora de emisión">
+                </div>
+
+                <!-- Guest -->
+                <div class="col-md-6">
+                    <label for="guest" class="form-label">Invitado</label>
+                    <input type="text" class="form-control" id="guest" name="guest" 
+                           value="{{ search_params.get('guest', '') }}" 
+                           placeholder="Nombre del invitado">
+                </div>
+
+                <!-- Item Code (DLT) -->
+                <div class="col-md-6">
+                    <label for="item_code" class="form-label">Código DLT</label>
+                    <input type="text" class="form-control" id="item_code" name="item_code" 
+                           value="{{ search_params.get('item_code', '') }}" 
+                           placeholder="ej. DLT15334975">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="search" class="me-2"></i>
+                            Buscar
+                        </button>
+                        <a href="{{ url_for('advanced_search') }}" class="btn btn-secondary">
+                            <i data-feather="x" class="me-2"></i>
+                            Limpiar
+                        </a>
+                        {% if results %}
+                        <a href="{{ url_for('export', format='csv', include_text='false', **search_params) }}" class="btn btn-success ms-auto">
+                            <i data-feather="download" class="me-2"></i>
+                            Exportar CSV
+                        </a>
+                        <a href="{{ url_for('export', format='xml', include_text='false', **search_params) }}" class="btn btn-info">
+                            <i data-feather="file-text" class="me-2"></i>
+                            Exportar XML
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Section -->
+{% if search_params %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i data-feather="list" class="me-2"></i>
+            Resultados de Búsqueda
+        </h5>
+        <span class="badge bg-primary">
+            {% if total_count > 100 %}
+                Mostrando 100 de {{ total_count }} resultados
+            {% else %}
+                {{ total_count }} resultados
+            {% endif %}
+        </span>
+    </div>
+    <div class="card-body">
+        {% if results %}
+        <div class="table-responsive">
+            <table class="table table-hover results-table">
+                <thead>
+                    <tr>
+                        <th>Fecha Programa</th>
+                        <th>Nombre Programa</th>
+                        <th>Hora Emisión Programa</th>
+                        <th>Hora Emisión Story</th>
+                        <th>Título</th>
+                        <th>Duración</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.program_date or '-' }}</td>
+                        <td class="text-truncate-200">{{ result.program_name or '-' }}</td>
+                        <td>{{ result.program_start_time or '-' }}</td>
+                        <td>{{ result.broadcast_start_time or '-' }}</td>
+                        <td class="text-truncate-200">{{ result.title or '-' }}</td>
+                        <td>{{ result.duration or '-' }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-info" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal{{ result.id }}">
+                                <i data-feather="eye"></i>
+                                Ver Detalles
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Detail Modal -->
+                    <div class="modal fade" id="detailModal{{ result.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Detalles del Registro</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <strong>Código DLT:</strong><br>
+                                            {{ result.item_code or '-' }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Programa:</strong><br>
+                                            {{ result.program_name or '-' }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Fecha:</strong><br>
+                                            {{ result.program_date or '-' }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Hora Emisión:</strong><br>
+                                            {{ result.broadcast_start_time or '-' }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Duración:</strong><br>
+                                            {{ result.duration or '-' }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Archivo Fuente:</strong><br>
+                                            {{ result.source_file or '-' }}
+                                        </div>
+                                        <div class="col-12">
+                                            <strong>Título:</strong><br>
+                                            {{ result.title or '-' }}
+                                        </div>
+                                        {% if result.guest %}
+                                        <div class="col-12">
+                                            <strong>Invitado:</strong><br>
+                                            {{ result.guest }}
+                                        </div>
+                                        {% endif %}
+                                        {% if result.text_content %}
+                                        <div class="col-12">
+                                            <strong>Texto:</strong><br>
+                                            <div class="text-muted" style="max-height: 200px; overflow-y: auto;">
+                                                {{ result.text_content }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info mb-0">
+            <i data-feather="info" class="me-2"></i>
+            No se encontraron resultados con los criterios de búsqueda proporcionados.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i data-feather="info" class="me-2"></i>
+    Utiliza los filtros anteriores para realizar una búsqueda avanzada en la base de datos.
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Re-initialize feather icons after page load (for modals)
+    document.addEventListener('DOMContentLoaded', function() {
+        feather.replace();
+    });
+    
+    // Re-initialize feather icons when modals are shown
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function() {
+            feather.replace();
+        });
+    });
+</script>
+{% endblock %}

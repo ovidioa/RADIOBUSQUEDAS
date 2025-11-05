@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Administrar - Procesador de Datos de Difusión XML{% endblock %}
@@ -12,6 +11,48 @@
                 Administración del Sistema
             </h1>
             <p class="lead text-muted">Gestiona archivos XML y base de datos</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="database" class="text-primary mb-2" style="width: 32px; height: 32px;"></i>
+                        <h3 class="mb-0">{{ stats.total_records }}</h3>
+                        <small class="text-muted">Total Registros</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="file" class="text-success mb-2" style="width: 32px; height: 32px;"></i>
+                        <h3 class="mb-0">{{ stats.distinct_files }}</h3>
+                        <small class="text-muted">Archivos Procesados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="tv" class="text-info mb-2" style="width: 32px; height: 32px;"></i>
+                        <h3 class="mb-0">{{ stats.total_programs }}</h3>
+                        <small class="text-muted">Programas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i data-feather="calendar" class="text-warning mb-2" style="width: 32px; height: 32px;"></i>
+                        <h6 class="mb-0">{{ stats.date_range[0] or '-' }}</h6>
+                        <small class="text-muted">hasta</small>
+                        <h6 class="mb-0">{{ stats.date_range[1] or '-' }}</h6>
+                        <small class="text-muted">Rango de Fechas</small>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row g-4">

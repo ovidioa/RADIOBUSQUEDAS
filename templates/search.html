@@ -200,6 +200,16 @@
                     <i data-feather="x-circle" class="me-2"></i>
                     Limpiar
                 </a>
+                {% if results %}
+                <a href="{{ url_for('export', format='csv', include_text='false', **search_params) }}" class="btn btn-success ms-auto">
+                    <i data-feather="download" class="me-2"></i>
+                    Exportar CSV
+                </a>
+                <a href="{{ url_for('export', format='xml', include_text='false', **search_params) }}" class="btn btn-info">
+                    <i data-feather="file-text" class="me-2"></i>
+                    Exportar XML
+                </a>
+                {% endif %}
             </div>
         </form>
     </div>

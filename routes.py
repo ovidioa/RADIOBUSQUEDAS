@@ -1,10 +1,14 @@
-from flask import render_template, request, flash, redirect, url_for, session
+from flask import render_template, request, flash, redirect, url_for, session, Response
 from functools import wraps
 from sqlalchemy import or_, and_
 from app import app, db
 from models import XMLData, User
 # Import moved to avoid circular import
 import os
+import csv
+import io
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 def login_required(f):
     @wraps(f)
@@ -122,11 +126,201 @@ def search():
                          total_count=total_count,
                          total_records=total_records)
 
+@app.route('/advanced_search')
+@login_required
+def advanced_search():
+    """Advanced search page with more specific filters"""
+    # Get search parameters
+    search_params = {}
+    for key in request.args:
+        value = request.args.get(key, '').strip()
+        if value:
+            search_params[key] = value
+    
+    results = []
+    total_count = 0
+    
+    if search_params:
+        # Build query based on search parameters
+        query = XMLData.query
+        
+        # Add filters for each search parameter
+        filters = []
+        
+        # Text content filter
+        if 'text_content' in search_params:
+            filters.append(XMLData.text_content.like(f'%{search_params["text_content"]}%'))
+        
+        # Program start time filter
+        if 'program_start_time' in search_params:
+            filters.append(XMLData.program_start_time.like(f'%{search_params["program_start_time"]}%'))
+        
+        # Story broadcast time filter
+        if 'broadcast_start_time' in search_params:
+            filters.append(XMLData.broadcast_start_time.like(f'%{search_params["broadcast_start_time"]}%'))
+        
+        # Guest filter
+        if 'guest' in search_params:
+            filters.append(XMLData.guest.like(f'%{search_params["guest"]}%'))
+        
+        # Title filter
+        if 'title' in search_params:
+            filters.append(XMLData.title.like(f'%{search_params["title"]}%'))
+        
+        # Program name filter
+        if 'program_name' in search_params:
+            filters.append(XMLData.program_name.like(f'%{search_params["program_name"]}%'))
+        
+        # Program date filter
+        if 'program_date' in search_params:
+            filters.append(XMLData.program_date.like(f'%{search_params["program_date"]}%'))
+        
+        # Item code filter
+        if 'item_code' in search_params:
+            filters.append(XMLData.item_code.like(f'%{search_params["item_code"]}%'))
+        
+        if filters:
+            # Combine filters with AND logic
+            query = query.filter(and_(*filters))
+        
+        total_count = query.count()
+        
+        # Get paginated results (limit to 100 for performance)
+        results = query.limit(100).all()
+        
+        if total_count > 100:
+            flash(f'Mostrando los primeros 100 resultados de {total_count} coincidencias totales. Por favor, refina tu búsqueda para obtener resultados más específicos.', 'info')
+    
+    # Get total record count
+    total_records = XMLData.query.count()
+    
+    return render_template('advanced_search.html', 
+                         results=results, 
+                         search_params=search_params,
+                         total_count=total_count,
+                         total_records=total_records)
+
 @app.route('/admin')
 @login_required
 def admin():
     """Administration page for XML processing and database management"""
-    return render_template('admin.html')
+    # Get total record count
+    total_records = XMLData.query.count()
+    
+    # Get distinct source files (processed directories)
+    distinct_files = db.session.query(XMLData.source_file).distinct().count()
+    
+    # Get statistics
+    stats = {
+        'total_records': total_records,
+        'distinct_files': distinct_files,
+        'total_programs': db.session.query(XMLData.program_name).filter(XMLData.program_name.isnot(None)).distinct().count(),
+        'date_range': db.session.query(
+            db.func.min(XMLData.program_date),
+            db.func.max(XMLData.program_date)
+        ).first()
+    }
+    
+    return render_template('admin.html', stats=stats)
+
+@app.route('/export')
+@login_required
+def export():
+    """Export search results to CSV or XML"""
+    # Get export format and options
+    export_format = request.args.get('format', 'csv').lower()
+    include_text = request.args.get('include_text', 'false').lower() == 'true'
+    
+    # Get search parameters to filter results
+    search_params = {}
+    for key in request.args:
+        if key not in ['format', 'include_text']:
+            value = request.args.get(key, '').strip()
+            if value:
+                search_params[key] = value
+    
+    # Build query based on search parameters
+    query = XMLData.query
+    
+    if search_params:
+        filters = []
+        for field, value in search_params.items():
+            if hasattr(XMLData, field):
+                column = getattr(XMLData, field)
+                filters.append(column.like(f'%{value}%'))
+        
+        if filters:
+            query = query.filter(and_(*filters))
+    
+    # Get all matching results (not limited to 100 for export)
+    results = query.all()
+    
+    if not results:
+        flash('No hay resultados para exportar', 'warning')
+        return redirect(request.referrer or url_for('search'))
+    
+    # Define fields to export
+    base_fields = [
+        'item_code', 'program_name', 'program_date', 'program_start_time',
+        'broadcast_start_time', 'duration', 'title', 'source_file'
+    ]
+    
+    if include_text:
+        base_fields.append('text_content')
+    
+    # Export to CSV
+    if export_format == 'csv':
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Write header
+        writer.writerow([field.upper().replace('_', ' ') for field in base_fields])
+        
+        # Write data
+        for result in results:
+            row = []
+            for field in base_fields:
+                value = getattr(result, field, '')
+                # Truncate text_content if too long
+                if field == 'text_content' and value and len(str(value)) > 500:
+                    value = str(value)[:500] + '...'
+                row.append(value or '')
+            writer.writerow(row)
+        
+        # Create response
+        response = Response(output.getvalue(), mimetype='text/csv')
+        response.headers['Content-Disposition'] = 'attachment; filename=export.csv'
+        return response
+    
+    # Export to XML
+    elif export_format == 'xml':
+        root = ET.Element('broadcast_data')
+        
+        for result in results:
+            item = ET.SubElement(root, 'item')
+            
+            for field in base_fields:
+                value = getattr(result, field, '')
+                if value:
+                    # Truncate text_content if too long
+                    if field == 'text_content' and len(str(value)) > 500:
+                        value = str(value)[:500] + '...'
+                    elem = ET.SubElement(item, field)
+                    elem.text = str(value)
+        
+        # Pretty print XML
+        xml_str = ET.tostring(root, encoding='unicode')
+        dom = minidom.parseString(xml_str)
+        pretty_xml = dom.toprettyxml(indent='  ')
+        
+        # Create response
+        response = Response(pretty_xml, mimetype='application/xml')
+        response.headers['Content-Disposition'] = 'attachment; filename=export.xml'
+        return response
+    
+    else:
+        flash('Formato de exportación no válido', 'error')
+        return redirect(request.referrer or url_for('search'))
 
 @app.route('/programs')
 @login_required
