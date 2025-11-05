@@ -1,10 +1,41 @@
-from flask import render_template, request, flash, redirect, url_for, session
+from flask import render_template, request, flash, redirect, url_for, session, Response
 from functools import wraps
 from sqlalchemy import or_, and_
 from app import app, db
 from models import XMLData, User
 # Import moved to avoid circular import
 import os
+import csv
+import io
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+from urllib.parse import urlparse, urljoin
+
+# Constants
+MAX_EXPORT_TEXT_LENGTH = 500  # Maximum characters for text content in exports
+
+def is_safe_redirect_url(target):
+    """Check if the target URL is safe for redirects (same domain only)"""
+    if not target:
+        return False
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+def get_safe_redirect():
+    """Get a safe redirect URL from request referrer"""
+    referrer = request.referrer
+    if referrer and is_safe_redirect_url(referrer):
+        return referrer
+    return url_for('search')
+
+def get_story_only_filter():
+    """Helper function to get filter for Story type records only.
+    Excludes GroupPack and StoryPack types as per Phase 8."""
+    return or_(
+        XMLData.object_type == 'Story',
+        XMLData.object_type.is_(None)
+    )
 
 def login_required(f):
     @wraps(f)
@@ -60,8 +91,21 @@ def process_xml():
     if not directory_path:
         directory_path = './attached_assets'  # Default to attached assets directory
     
+    # Validate and normalize path to prevent path injection
+    directory_path = os.path.abspath(directory_path)
+    
+    # Optional: Restrict to specific base directories for additional security
+    # allowed_base = os.path.abspath('./attached_assets')
+    # if not directory_path.startswith(allowed_base):
+    #     flash(f'Acceso denegado: solo se permiten directorios dentro de {allowed_base}', 'error')
+    #     return redirect(url_for('index'))
+    
     if not os.path.exists(directory_path):
         flash(f'El directorio no existe: {directory_path}', 'error')
+        return redirect(url_for('index'))
+    
+    if not os.path.isdir(directory_path):
+        flash(f'La ruta no es un directorio: {directory_path}', 'error')
         return redirect(url_for('index'))
     
     try:
@@ -91,6 +135,11 @@ def search():
     if search_params:
         # Build query based on search parameters
         query = XMLData.query
+        
+        # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+        # Only show Story type unless explicitly searching for a specific type
+        if 'object_type' not in search_params:
+            query = query.filter(get_story_only_filter())
         
         # Add filters for each search parameter
         filters = []
@@ -122,24 +171,225 @@ def search():
                          total_count=total_count,
                          total_records=total_records)
 
+@app.route('/advanced_search')
+@login_required
+def advanced_search():
+    """Advanced search page with more specific filters"""
+    # Get search parameters
+    search_params = {}
+    for key in request.args:
+        value = request.args.get(key, '').strip()
+        if value:
+            search_params[key] = value
+    
+    results = []
+    total_count = 0
+    
+    if search_params:
+        # Build query based on search parameters
+        query = XMLData.query
+        
+        # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+        if 'object_type' not in search_params:
+            query = query.filter(get_story_only_filter())
+        
+        # Add filters for each search parameter
+        filters = []
+        
+        # Text content filter
+        if 'text_content' in search_params:
+            filters.append(XMLData.text_content.like(f'%{search_params["text_content"]}%'))
+        
+        # Program start time filter
+        if 'program_start_time' in search_params:
+            filters.append(XMLData.program_start_time.like(f'%{search_params["program_start_time"]}%'))
+        
+        # Story broadcast time filter
+        if 'broadcast_start_time' in search_params:
+            filters.append(XMLData.broadcast_start_time.like(f'%{search_params["broadcast_start_time"]}%'))
+        
+        # Guest filter
+        if 'guest' in search_params:
+            filters.append(XMLData.guest.like(f'%{search_params["guest"]}%'))
+        
+        # Title filter
+        if 'title' in search_params:
+            filters.append(XMLData.title.like(f'%{search_params["title"]}%'))
+        
+        # Program name filter
+        if 'program_name' in search_params:
+            filters.append(XMLData.program_name.like(f'%{search_params["program_name"]}%'))
+        
+        # Program date filter
+        if 'program_date' in search_params:
+            filters.append(XMLData.program_date.like(f'%{search_params["program_date"]}%'))
+        
+        # Item code filter
+        if 'item_code' in search_params:
+            filters.append(XMLData.item_code.like(f'%{search_params["item_code"]}%'))
+        
+        if filters:
+            # Combine filters with AND logic
+            query = query.filter(and_(*filters))
+        
+        total_count = query.count()
+        
+        # Get paginated results (limit to 100 for performance)
+        results = query.limit(100).all()
+        
+        if total_count > 100:
+            flash(f'Mostrando los primeros 100 resultados de {total_count} coincidencias totales. Por favor, refina tu búsqueda para obtener resultados más específicos.', 'info')
+    
+    # Get total record count
+    total_records = XMLData.query.count()
+    
+    return render_template('advanced_search.html', 
+                         results=results, 
+                         search_params=search_params,
+                         total_count=total_count,
+                         total_records=total_records)
+
 @app.route('/admin')
 @login_required
 def admin():
     """Administration page for XML processing and database management"""
-    return render_template('admin.html')
+    # Get total record count
+    total_records = XMLData.query.count()
+    
+    # Get distinct source files (processed directories)
+    distinct_files = db.session.query(XMLData.source_file).distinct().count()
+    
+    # Get statistics
+    stats = {
+        'total_records': total_records,
+        'distinct_files': distinct_files,
+        'total_programs': db.session.query(XMLData.program_name).filter(XMLData.program_name.isnot(None)).distinct().count(),
+        'date_range': db.session.query(
+            db.func.min(XMLData.program_date),
+            db.func.max(XMLData.program_date)
+        ).first()
+    }
+    
+    return render_template('admin.html', stats=stats)
+
+@app.route('/export')
+@login_required
+def export():
+    """Export search results to CSV or XML"""
+    # Get export format and options
+    export_format = request.args.get('format', 'csv').lower()
+    include_text = request.args.get('include_text', 'false').lower() == 'true'
+    
+    # Get search parameters to filter results
+    search_params = {}
+    for key in request.args:
+        if key not in ['format', 'include_text']:
+            value = request.args.get(key, '').strip()
+            if value:
+                search_params[key] = value
+    
+    # Build query based on search parameters
+    query = XMLData.query
+    
+    # Exclude GroupPack and StoryPack types by default (as per Phase 8)
+    if 'object_type' not in search_params:
+        query = query.filter(get_story_only_filter())
+    
+    if search_params:
+        filters = []
+        for field, value in search_params.items():
+            if hasattr(XMLData, field):
+                column = getattr(XMLData, field)
+                filters.append(column.like(f'%{value}%'))
+        
+        if filters:
+            query = query.filter(and_(*filters))
+    
+    # Get all matching results
+    # Note: For very large datasets, consider implementing streaming or pagination
+    results = query.all()
+    
+    if not results:
+        flash('No hay resultados para exportar', 'warning')
+        return redirect(get_safe_redirect())
+    
+    # Define fields to export
+    base_fields = [
+        'item_code', 'program_name', 'program_date', 'program_start_time',
+        'broadcast_start_time', 'duration', 'title', 'source_file'
+    ]
+    
+    if include_text:
+        base_fields.append('text_content')
+    
+    # Export to CSV
+    if export_format == 'csv':
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Write header
+        writer.writerow([field.upper().replace('_', ' ') for field in base_fields])
+        
+        # Write data
+        for result in results:
+            row = []
+            for field in base_fields:
+                value = getattr(result, field, '')
+                # Truncate text_content if too long
+                if field == 'text_content' and value and len(str(value)) > MAX_EXPORT_TEXT_LENGTH:
+                    value = str(value)[:MAX_EXPORT_TEXT_LENGTH] + '...'
+                row.append(value or '')
+            writer.writerow(row)
+        
+        # Create response
+        response = Response(output.getvalue(), mimetype='text/csv')
+        response.headers['Content-Disposition'] = 'attachment; filename=export.csv'
+        return response
+    
+    # Export to XML
+    elif export_format == 'xml':
+        root = ET.Element('broadcast_data')
+        
+        for result in results:
+            item = ET.SubElement(root, 'item')
+            
+            for field in base_fields:
+                value = getattr(result, field, '')
+                if value:
+                    # Truncate text_content if too long
+                    if field == 'text_content' and len(str(value)) > MAX_EXPORT_TEXT_LENGTH:
+                        value = str(value)[:MAX_EXPORT_TEXT_LENGTH] + '...'
+                    elem = ET.SubElement(item, field)
+                    elem.text = str(value)
+        
+        # Pretty print XML
+        xml_str = ET.tostring(root, encoding='unicode')
+        dom = minidom.parseString(xml_str)
+        pretty_xml = dom.toprettyxml(indent='  ')
+        
+        # Create response
+        response = Response(pretty_xml, mimetype='application/xml')
+        response.headers['Content-Disposition'] = 'attachment; filename=export.xml'
+        return response
+    
+    else:
+        flash('Formato de exportación no válido', 'error')
+        return redirect(get_safe_redirect())
 
 @app.route('/programs')
 @login_required
 def programs():
     """Show programs by date"""
     # Get distinct programs with their dates
+    # Exclude GroupPack and StoryPack types by default (as per Phase 8)
     programs_data = db.session.query(
         XMLData.program_name,
         XMLData.program_date,
         db.func.count(XMLData.id).label('story_count')
     ).filter(
         XMLData.program_name.isnot(None),
-        XMLData.program_date.isnot(None)
+        XMLData.program_date.isnot(None),
+        get_story_only_filter()
     ).group_by(
         XMLData.program_name,
         XMLData.program_date
@@ -152,7 +402,8 @@ def programs():
     unique_programs = db.session.query(
         XMLData.program_name
     ).filter(
-        XMLData.program_name.isnot(None)
+        XMLData.program_name.isnot(None),
+        get_story_only_filter()
     ).distinct().order_by(XMLData.program_name).all()
     
     program_names = [program[0] for program in unique_programs]
@@ -164,7 +415,7 @@ def programs():
     # Apply filters if provided
     filtered_results = []
     if selected_date or selected_program:
-        query = XMLData.query
+        query = XMLData.query.filter(get_story_only_filter())
         
         if selected_date:
             query = query.filter(XMLData.program_date == selected_date)
